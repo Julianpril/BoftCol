@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function CtaSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -58,6 +60,7 @@ export default function CtaSection() {
           <button
             data-animate
             id="cta-bottom-button"
+            onClick={() => navigate('/upload')}
             className="bg-surface text-primary-fixed px-8 sm:px-10 md:px-12 py-4 md:py-5 lg:py-6 rounded-full
               font-label text-base md:text-lg lg:text-xl font-semibold tracking-wide
               hover:bg-surface-bright active:scale-95 transition-all duration-200

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const photoCards = [
   {
@@ -33,6 +34,7 @@ const photoCards = [
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -87,6 +89,7 @@ export default function HeroSection() {
         >
           <button
             id="hero-cta-primary"
+            onClick={() => navigate('/upload')}
             className="bg-primary-fixed text-on-primary-fixed px-8 md:px-10 py-4 md:py-5 rounded-full font-label text-base md:text-lg font-semibold tracking-wide
               hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-primary-fixed/20 cursor-pointer"
           >
@@ -94,6 +97,9 @@ export default function HeroSection() {
           </button>
           <button
             id="hero-cta-secondary"
+            onClick={() => {
+              document.getElementById('precios')?.scrollIntoView({ behavior: 'smooth' });
+            }}
             className="border-2 border-primary-fixed text-primary-fixed px-8 md:px-10 py-4 md:py-5 rounded-full font-label text-base md:text-lg font-semibold tracking-wide
               hover:bg-primary-fixed/5 active:scale-95 transition-all duration-200 cursor-pointer"
           >

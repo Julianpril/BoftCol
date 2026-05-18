@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface PriceTier {
   photos: number;
@@ -45,6 +46,7 @@ function formatCOP(value: number): string {
 export default function PricingSection() {
   const [showAll, setShowAll] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -156,6 +158,7 @@ export default function PricingSection() {
 
               {/* CTA */}
               <button
+                onClick={() => navigate('/upload')}
                 className={`w-full py-3.5 rounded-full font-label text-sm font-semibold tracking-wider uppercase transition-all duration-200 cursor-pointer
                   ${isPopular
                     ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[0.98] shadow-md shadow-primary-fixed/20'
@@ -209,7 +212,7 @@ export default function PricingSection() {
               </tr>
             </thead>
             <tbody>
-              {allTiers.map((tier, index) => {
+              {allTiers.map((tier, _index) => {
                 const savings = ((3000 - tier.perPhoto) / 3000) * 100;
                 const isHighlighted = [2, 10, 28].includes(tier.photos);
                 return (

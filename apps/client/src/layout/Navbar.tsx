@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const navLinks = [
   { label: 'Cómo funciona', href: '#como-funciona' },
@@ -9,6 +10,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -56,6 +58,7 @@ export default function Navbar() {
 
         {/* Desktop CTA */}
         <button
+          onClick={() => navigate('/admin/login')}
           className="hidden md:block bg-primary-fixed text-on-primary-fixed px-7 py-2.5 rounded-full font-label text-sm font-semibold tracking-wider uppercase
             hover:scale-[0.97] active:scale-95 transition-all duration-150 shadow-md shadow-primary-fixed/20 cursor-pointer"
         >
@@ -106,6 +109,10 @@ export default function Navbar() {
             </a>
           ))}
           <button
+            onClick={() => {
+              setMobileOpen(false);
+              navigate('/admin/login');
+            }}
             className="mt-4 bg-primary-fixed text-on-primary-fixed px-10 py-4 rounded-full font-label text-base font-semibold tracking-wider uppercase
               hover:scale-[0.97] active:scale-95 transition-all cursor-pointer"
           >
