@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  status         OrderStatus @default(PENDING)
+  
+  // Delivery info
+  customerName   String
+  email          String?
+  city           String
+  phone          String
+  address        String
+  
+  // Order details
+  photoCount     Int
+  formatId       String
+  totalPrice     Float
+  shippingCost   Float       @default(2900)
+  
+  // Storage
+  driveFolderId  String?
+  receiptFileId  String?
+  
+  // Rejection
+  rejectReason   String?
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Settings {
+  id              String   @id @default("global")
+  shippingCost    Float    @default(2900)
+  nequiNumber     String   @default("3125871829")
+  nequiName       String   @default("BOFT COLOMBIA SAS")
+  nequiQrDriveId  String?
+  nequiQrUrl      String?
+
+  updatedAt       DateTime @updatedAt
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  REJECTED
+}
+
+model PriceTier {
+  id         String   @id @default(uuid())
+  photoCount Int      @unique
+  price      Float
+  perPhoto   Float
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
