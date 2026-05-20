@@ -11,6 +11,7 @@ colombiaData.forEach((item: any) => {
 
 interface CheckoutFormData {
   customerName: string;
+  email: string;
   department: string;
   city: string;
   phone: string;
@@ -22,6 +23,7 @@ export default function CheckoutPage() {
   const location = useLocation();
   const [formData, setFormData] = useState<CheckoutFormData>({
     customerName: '',
+    email: '',
     department: '',
     city: '',
     phone: '',
@@ -94,7 +96,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const isFormValid = formData.customerName && formData.department && formData.city && formData.phone && formData.address;
+  const isFormValid = formData.customerName && formData.email && formData.department && formData.city && formData.phone && formData.address;
 
   return (
     <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 pt-24 md:pt-28">
@@ -123,6 +125,18 @@ export default function CheckoutPage() {
                   required
                   className="w-full bg-surface-container-low border-b-2 border-outline-variant p-4 text-on-surface focus:border-primary-fixed transition-colors outline-none" 
                   placeholder="Ej: Juan Pérez" 
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="font-label text-sm font-semibold text-on-surface-variant">Correo Electrónico</label>
+                <input 
+                  type="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full bg-surface-container-low border-b-2 border-outline-variant p-4 text-on-surface focus:border-primary-fixed transition-colors outline-none" 
+                  placeholder="Ej: juan@email.com" 
                 />
               </div>
               <div className="flex flex-col gap-2">
