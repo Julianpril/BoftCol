@@ -67,7 +67,7 @@ export default function UploadZone({
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
         className={`relative group cursor-pointer border-2 border-dashed rounded-2xl p-8 md:p-12
-          flex flex-col items-center justify-center text-center transition-all duration-300 min-h-[320px] md:min-h-[420px]
+          flex flex-col items-center justify-center text-center transition-all duration-300 min-h-80 md:min-h-105
           ${isDragging
             ? 'border-primary-fixed bg-primary-fixed/5 scale-[1.01]'
             : 'border-outline-variant/40 hover:border-primary-fixed/60 bg-surface-container-lowest'
@@ -141,7 +141,7 @@ export default function UploadZone({
                 </button>
               </div>
               {/* File name tooltip */}
-              <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-gradient-to-t from-black/70 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-linear-to-t from-black/70 to-transparent">
                 <p className="font-label text-[10px] text-white/80 truncate">
                   {photo.file.name}
                 </p>

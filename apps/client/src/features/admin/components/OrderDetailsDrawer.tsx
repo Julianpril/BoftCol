@@ -2,6 +2,17 @@ import { useState } from 'react';
 import RejectOrderModal from './RejectOrderModal';
 import { updateOrderStatus } from '@/api';
 
+const ALL_STATUSES = ['PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REJECTED'] as const;
+
+const statusLabelsAll: Record<string, string> = {
+  PENDING: 'Pendiente',
+  PAID: 'Pagado',
+  PROCESSING: 'Procesando',
+  SHIPPED: 'Enviado',
+  DELIVERED: 'Entregado',
+  REJECTED: 'Rechazado',
+};
+
 interface OrderDetailsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,6 +25,8 @@ export default function OrderDetailsDrawer({ isOpen, onClose, order, onRefresh }
   const [isProcessing, setIsProcessing] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
+  const [changeStatusOpen, setChangeStatusOpen] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<string>('');
 
   if (!isOpen || !order) return null;
 
@@ -30,6 +43,23 @@ export default function OrderDetailsDrawer({ isOpen, onClose, order, onRefresh }
       onClose();
     } catch {
       setActionError('No se pudo aprobar el pedido. Intenta de nuevo.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleChangeStatus = async () => {
+    if (!pendingStatus || pendingStatus === order.status) return;
+    try {
+      setIsProcessing(true);
+      setActionError(null);
+      await updateOrderStatus(order.id, pendingStatus);
+      if (onRefresh) onRefresh();
+      setChangeStatusOpen(false);
+      setPendingStatus('');
+      onClose();
+    } catch {
+      setActionError('No se pudo cambiar el estado. Intenta de nuevo.');
     } finally {
       setIsProcessing(false);
     }
@@ -70,7 +100,7 @@ export default function OrderDetailsDrawer({ isOpen, onClose, order, onRefresh }
       <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
 
       {/* Drawer */}
-      <aside className="fixed top-0 right-0 h-full w-full sm:max-w-[480px] bg-surface-container-lowest border-l border-surface-variant z-50 shadow-2xl flex flex-col">
+      <aside className="fixed top-0 right-0 h-full w-full sm:max-w-120 bg-surface-container-lowest border-l border-surface-variant z-50 shadow-2xl flex flex-col">
 
         {/* Header */}
         <div className="flex-shrink-0 px-6 py-5 border-b border-surface-variant flex items-center justify-between bg-surface-container">
@@ -198,36 +228,93 @@ export default function OrderDetailsDrawer({ isOpen, onClose, order, onRefresh }
         </div>
 
         {/* Footer con acciones */}
-        {(order.status === 'PAID' || order.status === 'PENDING') && (
-          <div className="flex-shrink-0 p-5 bg-surface-container border-t border-surface-variant space-y-3 shadow-[0_-10px_30px_rgba(0,0,0,0.4)]">
-            {actionError && (
-              <div className="flex items-center gap-2 bg-error/10 border border-error/30 text-error rounded-xl px-4 py-3 text-sm font-semibold">
-                <span className="material-symbols-outlined text-base shrink-0">error</span>
-                {actionError}
+        <div className="flex-shrink-0 p-5 bg-surface-container border-t border-surface-variant space-y-3 shadow-[0_-10px_30px_rgba(0,0,0,0.4)]">
+          {actionError && (
+            <div className="flex items-center gap-2 bg-error/10 border border-error/30 text-error rounded-xl px-4 py-3 text-sm font-semibold">
+              <span className="material-symbols-outlined text-base shrink-0">error</span>
+              {actionError}
+            </div>
+          )}
+
+          {/* Aprobar / Rechazar — solo para PAID y PENDING */}
+          {(order.status === 'PAID' || order.status === 'PENDING') && (
+            <>
+              <button
+                onClick={handleApprove}
+                disabled={isProcessing}
+                className="w-full bg-primary-container text-on-primary-fixed py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-[0_0_15px_rgba(207,241,0,0.25)] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? (
+                  <span className="w-5 h-5 border-2 border-on-primary-fixed/30 border-t-on-primary-fixed rounded-full animate-spin" />
+                ) : (
+                  <span className="material-symbols-outlined">check_circle</span>
+                )}
+                Aprobar y Generar Código
+              </button>
+              <button
+                onClick={() => setIsRejectModalOpen(true)}
+                disabled={isProcessing}
+                className="w-full border-2 border-error text-error py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-error/10 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="material-symbols-outlined">cancel</span>
+                Rechazar
+              </button>
+            </>
+          )}
+
+          {/* Cambiar estado manualmente — siempre disponible */}
+          {!changeStatusOpen ? (
+            <button
+              onClick={() => { setChangeStatusOpen(true); setPendingStatus(order.status); }}
+              className="w-full flex items-center justify-center gap-2 py-3 text-sm text-on-surface-variant hover:text-on-surface border border-outline-variant/30 rounded-full hover:bg-surface-variant/30 transition-colors"
+            >
+              <span className="material-symbols-outlined text-base">edit</span>
+              Cambiar estado manualmente
+            </button>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Selecciona el nuevo estado</p>
+              <div className="grid grid-cols-3 gap-2">
+                {ALL_STATUSES.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setPendingStatus(s)}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                      pendingStatus === s
+                        ? 'bg-primary-container text-on-primary-container border-primary-container'
+                        : s === order.status
+                        ? 'border-outline-variant/30 text-on-surface-variant/40 cursor-default'
+                        : 'border-outline-variant/20 text-on-surface-variant hover:border-primary-container/40 hover:text-on-surface'
+                    }`}
+                    disabled={s === order.status}
+                  >
+                    {statusLabelsAll[s]}
+                  </button>
+                ))}
               </div>
-            )}
-            <button
-              onClick={handleApprove}
-              disabled={isProcessing}
-              className="w-full bg-primary-container text-on-primary-fixed py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-[0_0_15px_rgba(207,241,0,0.25)] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isProcessing ? (
-                <span className="w-5 h-5 border-2 border-on-primary-fixed/30 border-t-on-primary-fixed rounded-full animate-spin" />
-              ) : (
-                <span className="material-symbols-outlined">check_circle</span>
-              )}
-              Aprobar y Generar Código
-            </button>
-            <button
-              onClick={() => setIsRejectModalOpen(true)}
-              disabled={isProcessing}
-              className="w-full border-2 border-error text-error py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-error/10 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="material-symbols-outlined">cancel</span>
-              Rechazar
-            </button>
-          </div>
-        )}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setChangeStatusOpen(false); setPendingStatus(''); setActionError(null); }}
+                  className="flex-1 py-3 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-bold hover:bg-surface-variant/30 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleChangeStatus}
+                  disabled={isProcessing || !pendingStatus || pendingStatus === order.status}
+                  className="flex-1 py-3 rounded-full bg-primary-container text-on-primary-fixed text-sm font-bold hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isProcessing ? (
+                    <span className="w-4 h-4 border-2 border-on-primary-fixed/30 border-t-on-primary-fixed rounded-full animate-spin" />
+                  ) : (
+                    <span className="material-symbols-outlined text-base">check</span>
+                  )}
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </aside>
 
       <RejectOrderModal

@@ -21,6 +21,8 @@ Si el usuario subió un comprobante, yo (el sistema) te enviaré los detalles ex
 DEBES asignar un código real usando "assign_print_code" pasando el monto pagado.
 Responde de forma concisa y amigable.
 La cuenta oficial de pagos es mediante el método de "Llaves" en Colombia (Banco Dale / Bancolombia / Nequi) a la llave @dllah313 a nombre de Ledy Dayana Abril Herrera.
+El mensaje de bienvenida ya le preguntó el nombre al cliente; úsalo en todas tus respuestas desde que lo conozcas para dirigirte a él personalmente (ej. "Claro, [nombre], puedo ayudarte con eso").
+Cuando el cliente se despida, diga "gracias", "listo", "eso es todo", "hasta luego" o similar sin tener más preguntas pendientes, DEBES llamar la herramienta "close_session".
 
 Tabla de precios de impresión BOFT (no se cobra envío porque el cliente está presencialmente en la máquina):
 ${priceTable}
@@ -37,6 +39,16 @@ export async function createSession(req: Request, res: Response): Promise<void> 
     const session = await prisma.supportSession.create({
       data: {}
     });
+
+    await prisma.supportMessage.create({
+      data: {
+        sessionId: session.id,
+        role: 'assistant',
+        content: '¡Hola! Soy el asistente virtual de BOFT Colombia. ¿Con qué nombre te puedo atender hoy?',
+        requiresReceipt: false,
+      } as any
+    });
+
     res.status(201).json(session);
   } catch (error) {
     console.error('Error creating support session:', error);
@@ -117,6 +129,14 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
         {
           type: "function",
           function: {
+            name: "close_session",
+            description: "Llama a esta función cuando el usuario se despida, diga 'gracias', 'listo', 'eso es todo', 'hasta luego', o cuando ya resolviste su consulta y no tiene más preguntas.",
+            parameters: { type: "object", properties: {} },
+          }
+        },
+        {
+          type: "function",
+          function: {
             name: "assign_print_code",
             description: "Llama a esta función cuando hayas verificado que el comprobante de pago es válido. Extraerá de la base de datos un código real y único del valor correspondiente.",
             parameters: {
@@ -135,12 +155,18 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
     let responseText = aiMessage.content || "";
     let requiresReceipt = false;
     let printCode: string | undefined = undefined;
+    let isSessionClosed = false;
 
     // Revisamos si la IA llamó a alguna herramienta
     if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
       for (const t of aiMessage.tool_calls) {
         const toolCall = t as any; // Cast to bypass TS property access error
-        if (toolCall.function.name === 'request_nequi_receipt') {
+        if (toolCall.function.name === 'close_session') {
+          isSessionClosed = true;
+          if (!responseText) {
+            responseText = "¡Ha sido un placer atenderte! Si necesitas más ayuda en el futuro, estaremos aquí. ¡Hasta pronto!";
+          }
+        } else if (toolCall.function.name === 'request_nequi_receipt') {
           requiresReceipt = true;
           if (!responseText) {
             responseText = "Perfecto. Por favor, sube tu comprobante de transferencia aquí mismo para poder validarlo y generar tu código de impresión.";
@@ -190,7 +216,7 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
       } as any // Bypass TS error before prisma generate is run
     });
 
-    res.json(savedAiMessage);
+    res.json({ ...savedAiMessage, isSessionClosed });
 
   } catch (error) {
     console.error('Error sending message:', error);

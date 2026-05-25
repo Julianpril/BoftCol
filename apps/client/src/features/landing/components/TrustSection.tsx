@@ -44,7 +44,7 @@ export default function TrustSection() {
     <section
       ref={sectionRef}
       id="social-proof"
-      className="max-w-[1200px] mx-auto px-4 md:px-6 py-16 md:py-20 flex flex-col items-center text-center"
+      className="max-w-300 mx-auto px-4 md:px-6 py-16 md:py-20 flex flex-col items-center text-center"
     >
       <h2
         data-animate

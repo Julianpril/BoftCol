@@ -61,7 +61,7 @@ export default function HeroSection() {
     <section
       ref={sectionRef}
       id="hero"
-      className="max-w-[1200px] mx-auto px-4 md:px-6 pt-28 pb-16 md:pt-32 md:pb-20 lg:py-20 lg:pt-36
+      className="max-w-300 mx-auto px-4 md:px-6 pt-28 pb-16 md:pt-32 md:pb-20 lg:py-20 lg:pt-36
         grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[calc(100vh-80px)]"
     >
       {/* Text Content */}
@@ -109,9 +109,9 @@ export default function HeroSection() {
       </div>
 
       {/* Photo Grid */}
-      <div className="relative h-[420px] sm:h-[500px] lg:h-[600px] flex items-center justify-center order-1 lg:order-2">
+      <div className="relative h-105 sm:h-125 lg:h-150 flex items-center justify-center order-1 lg:order-2">
         {/* Background glow */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-primary-fixed/10 to-transparent rounded-full blur-3xl animate-glow-pulse" />
+        <div className="absolute inset-0 bg-linear-to-tr from-primary-fixed/10 to-transparent rounded-full blur-3xl animate-glow-pulse" />
 
         <div className="relative grid grid-cols-2 gap-4 md:gap-6 rotate-3 scale-[0.75] sm:scale-[0.85] md:scale-90 lg:scale-100">
           {/* Column 1 */}
@@ -119,7 +119,7 @@ export default function HeroSection() {
             {col0.map((card, i) => (
               <div
                 key={i}
-                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-300 hover:!rotate-0 hover:scale-[1.02]"
+                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-300 hover:rotate-0! hover:scale-[1.02]"
                 style={{ transform: `rotate(${card.rotation})${i === 1 ? ' translateX(16px)' : ''}`, transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
               >
                 <img
@@ -137,7 +137,7 @@ export default function HeroSection() {
             {col1.map((card, i) => (
               <div
                 key={i}
-                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-300 hover:!rotate-0 hover:scale-[1.02]"
+                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-300 hover:rotate-0! hover:scale-[1.02]"
                 style={{ transform: `rotate(${card.rotation})${i === 1 ? ' translateX(-8px)' : ''}`, transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
               >
                 <img

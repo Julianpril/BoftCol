@@ -16,6 +16,10 @@ export default function SupportChatPage() {
   const [sessionId, setSessionId] = useState<string | null>(localStorage.getItem('supportSessionId'));
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSessionClosed, setIsSessionClosed] = useState(() => {
+    const sid = localStorage.getItem('supportSessionId');
+    return sid ? localStorage.getItem(`supportClosed_${sid}`) === 'true' : false;
+  });
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -77,6 +81,10 @@ export default function SupportChatPage() {
       });
       const data = await res.json();
       setMessages(prev => [...prev, data]);
+      if (data.isSessionClosed) {
+        setIsSessionClosed(true);
+        if (sessionId) localStorage.setItem(`supportClosed_${sessionId}`, 'true');
+      }
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -112,6 +120,14 @@ export default function SupportChatPage() {
     }
   };
 
+  const handleNewChat = () => {
+    if (sessionId) localStorage.removeItem(`supportClosed_${sessionId}`);
+    localStorage.removeItem('supportSessionId');
+    setSessionId(null);
+    setMessages([]);
+    setIsSessionClosed(false);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -126,14 +142,6 @@ export default function SupportChatPage() {
         <Link to="/" className="text-xl md:text-2xl font-bold text-primary-fixed tracking-tighter hover:opacity-80 transition-opacity">
           BOFT Colombia
         </Link>
-        <div className="flex items-center gap-4 md:gap-6">
-          <button className="text-on-surface-variant hover:text-primary-fixed transition-colors active:scale-95 flex items-center">
-            <span className="material-symbols-outlined">help</span>
-          </button>
-          <button className="text-on-surface-variant hover:text-primary-fixed transition-colors active:scale-95 flex items-center">
-            <span className="material-symbols-outlined">account_circle</span>
-          </button>
-        </div>
       </header>
 
       {/* Barra lateral */}
@@ -153,18 +161,6 @@ export default function SupportChatPage() {
           <Link to="/support" className="flex items-center gap-4 bg-primary-fixed text-on-primary-fixed rounded-full px-4 py-3 mx-2 font-semibold text-sm">
             <span className="material-symbols-outlined">chat</span>
             Support Chat
-          </Link>
-          <Link to="/history" className="flex items-center gap-4 text-on-surface-variant hover:text-primary-fixed hover:bg-surface-container-highest rounded-full px-4 py-3 mx-2 transition-transform hover:translate-x-1 duration-200 font-semibold text-sm">
-            <span className="material-symbols-outlined">history</span>
-            Print History
-          </Link>
-          <Link to="/locations" className="flex items-center gap-4 text-on-surface-variant hover:text-primary-fixed hover:bg-surface-container-highest rounded-full px-4 py-3 mx-2 transition-transform hover:translate-x-1 duration-200 font-semibold text-sm">
-            <span className="material-symbols-outlined">location_on</span>
-            Locations
-          </Link>
-          <Link to="/help" className="flex items-center gap-4 text-on-surface-variant hover:text-primary-fixed hover:bg-surface-container-highest rounded-full px-4 py-3 mx-2 transition-transform hover:translate-x-1 duration-200 font-semibold text-sm">
-            <span className="material-symbols-outlined">contact_support</span>
-            Help Center
           </Link>
         </nav>
         <div className="p-4 mb-4 pb-20">
@@ -339,35 +335,52 @@ export default function SupportChatPage() {
           </div>
         </div>
 
-        {/* Área de escritura fija abajo */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-surface-container-lowest border-t border-outline-variant md:px-12 pb-24 md:pb-4">
-          <div className="max-w-4xl mx-auto flex items-end gap-3 md:gap-4">
-            <div className="flex-1 bg-surface-container rounded-3xl p-1.5 pl-4 flex items-center border border-outline-variant focus-within:border-primary-fixed transition-colors shadow-inner">
-              <textarea 
-                className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/50 py-3 resize-none outline-none text-sm md:text-base max-h-32" 
-                placeholder="Escribe un mensaje..."
-                rows={1}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              <button className="p-3 text-on-surface-variant hover:text-primary-fixed transition-colors">
-                <span className="material-symbols-outlined">attach_file</span>
+        {/* Área de escritura o estado finalizado */}
+        {isSessionClosed ? (
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-surface-container-lowest border-t border-outline-variant md:px-12 pb-24 md:pb-4">
+            <div className="max-w-4xl mx-auto flex flex-col items-center gap-3 py-3 text-center">
+              <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                Conversación finalizada
+              </div>
+              <button
+                onClick={handleNewChat}
+                className="bg-primary-fixed text-on-primary-fixed px-8 py-3 rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all"
+              >
+                Iniciar nueva consulta
               </button>
             </div>
-            <button 
-              onClick={() => handleSendMessage()}
-              disabled={!inputValue.trim() || isLoading}
-              className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg transition-all shrink-0 ${
-                inputValue.trim() && !isLoading
-                 ? 'bg-primary-fixed text-on-primary-fixed hover:scale-105 active:scale-95' 
-                 : 'bg-surface-container-highest text-on-surface-variant opacity-50 cursor-not-allowed'
-              }`}
-            >
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
-            </button>
           </div>
-        </div>
+        ) : (
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-surface-container-lowest border-t border-outline-variant md:px-12 pb-24 md:pb-4">
+            <div className="max-w-4xl mx-auto flex items-end gap-3 md:gap-4">
+              <div className="flex-1 bg-surface-container rounded-3xl p-1.5 pl-4 flex items-center border border-outline-variant focus-within:border-primary-fixed transition-colors shadow-inner">
+                <textarea
+                  className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/50 py-3 resize-none outline-none text-sm md:text-base max-h-32"
+                  placeholder="Escribe un mensaje..."
+                  rows={1}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                <button className="p-3 text-on-surface-variant hover:text-primary-fixed transition-colors">
+                  <span className="material-symbols-outlined">attach_file</span>
+                </button>
+              </div>
+              <button
+                onClick={() => handleSendMessage()}
+                disabled={!inputValue.trim() || isLoading}
+                className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg transition-all shrink-0 ${
+                  inputValue.trim() && !isLoading
+                   ? 'bg-primary-fixed text-on-primary-fixed hover:scale-105 active:scale-95'
+                   : 'bg-surface-container-highest text-on-surface-variant opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+              </button>
+            </div>
+          </div>
+        )}
       </main>
       )}
 
@@ -380,14 +393,6 @@ export default function SupportChatPage() {
         <Link to="/support" className="flex flex-col items-center justify-center text-primary-fixed font-bold scale-110 transition-transform">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>forum</span>
           <span className="text-[10px] font-medium mt-1">Chat</span>
-        </Link>
-        <Link to="/history" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed transition-colors">
-          <span className="material-symbols-outlined">receipt_long</span>
-          <span className="text-[10px] font-medium mt-1">Prints</span>
-        </Link>
-        <Link to="/profile" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed transition-colors">
-          <span className="material-symbols-outlined">person</span>
-          <span className="text-[10px] font-medium mt-1">Profile</span>
         </Link>
       </nav>
     </div>

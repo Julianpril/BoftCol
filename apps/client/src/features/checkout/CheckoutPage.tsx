@@ -99,7 +99,7 @@ export default function CheckoutPage() {
   const isFormValid = formData.customerName && formData.email && formData.department && formData.city && formData.phone && formData.address;
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 pt-24 md:pt-28">
+    <div className="max-w-300 mx-auto px-4 md:px-6 py-8 md:py-12 pt-24 md:pt-28">
       <h1 className="font-headline text-3xl md:text-4xl font-bold mb-8 md:mb-12 text-on-surface">Finalizar Pedido</h1>
       
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">

@@ -27,7 +27,7 @@ export default function CtaSection() {
     <section
       ref={sectionRef}
       id="cta-bottom"
-      className="max-w-[1200px] mx-auto px-4 md:px-6 pb-16 md:pb-20"
+      className="max-w-300 mx-auto px-4 md:px-6 pb-16 md:pb-20"
     >
       <div className="bg-primary-fixed rounded-3xl p-8 sm:p-12 md:p-16 lg:p-20 text-center relative overflow-hidden group">
         {/* Texture overlay */}

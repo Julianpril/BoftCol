@@ -1,0 +1,190 @@
+﻿COMMIT:cba5d1366b23e00d0cd130b156466047c686a0b1|AUTHOR:Julianpril|DATE:Wed May 27 08:45:57 2026 -0500|MSG:arreglos
+M	apps/client/src/api/index.ts
+M	apps/client/src/api/photosApi.ts
+A	apps/client/src/features/admin/AdminCodesPage.tsx
+M	apps/client/src/features/admin/AdminDashboardPage.tsx
+M	apps/client/src/features/admin/AdminLoginPage.tsx
+M	apps/client/src/features/admin/components/OrderDetailsDrawer.tsx
+M	apps/client/src/features/admin/index.ts
+M	apps/client/src/features/checkout/CheckoutPage.tsx
+M	apps/client/src/features/landing/components/CtaSection.tsx
+M	apps/client/src/features/landing/components/HeroSection.tsx
+M	apps/client/src/features/landing/components/PricingSection.tsx
+M	apps/client/src/features/landing/components/TrustSection.tsx
+M	apps/client/src/features/landing/components/ValuePropsSection.tsx
+M	apps/client/src/features/payments/NequiPaymentPage.tsx
+M	apps/client/src/features/payments/PaymentStatusPage.tsx
+M	apps/client/src/features/photos/UploadPage.tsx
+M	apps/client/src/features/photos/components/OrderSummary.tsx
+M	apps/client/src/features/photos/components/PolaroidPreview.tsx
+A	apps/client/src/features/support/SupportChatPage.tsx
+A	apps/client/src/features/support/index.ts
+M	apps/client/src/index.css
+M	apps/client/src/layout/Footer.tsx
+M	apps/client/src/layout/Navbar.tsx
+M	apps/client/src/layout/RootLayout.tsx
+M	apps/client/src/router/AppRouter.tsx
+M	apps/client/vite.config.ts
+M	apps/server/package.json
+M	apps/server/prisma/schema.prisma
+M	apps/server/prisma/seed.ts
+M	apps/server/src/config.ts
+M	apps/server/src/controllers/orderController.ts
+M	apps/server/src/controllers/photoController.ts
+A	apps/server/src/controllers/printCodeController.ts
+A	apps/server/src/controllers/supportController.ts
+M	apps/server/src/db/prisma.ts
+M	apps/server/src/index.ts
+M	apps/server/src/models/photo.ts
+M	apps/server/src/routes/orderRoutes.ts
+M	apps/server/src/routes/photoRoutes.ts
+A	apps/server/src/routes/printCodeRoutes.ts
+A	apps/server/src/routes/supportRoutes.ts
+M	apps/server/src/services/catalog.ts
+A	apps/server/src/services/emailService.ts
+M	apps/server/src/services/googleDrive.ts
+M	apps/server/src/services/upload.ts
+A	apps/server/uploads/local_order_2a0f998f-6fb8-40f3-8407-6eebc9b24272/76e02b3c-7f0c-48db-8238-9b086202e3fc.png
+A	apps/server/uploads/local_order_2a0f998f-6fb8-40f3-8407-6eebc9b24272/7b879221-4135-4d40-b3d9-ca15d1244713.jpeg
+A	apps/server/uploads/local_order_2a0f998f-6fb8-40f3-8407-6eebc9b24272/8e7f9763-cf47-48a6-bbe3-5cc2c55435e6.png
+A	apps/server/uploads/local_order_2a0f998f-6fb8-40f3-8407-6eebc9b24272/b66f81ff-5bd1-4dc1-89b2-729f8a2598fc.jpeg
+A	apps/server/uploads/local_order_2da7124c-e865-46f5-adc8-9f7fe90dbc15/041abb27-cf1f-4a4d-8b3e-5ebd861afca3.jpeg
+A	apps/server/uploads/local_order_2da7124c-e865-46f5-adc8-9f7fe90dbc15/7f0d77bd-04d2-4d3e-ae52-0662dda250a1.jpeg
+A	apps/server/uploads/local_order_2da7124c-e865-46f5-adc8-9f7fe90dbc15/comprobante_1779741840736_Cronograma  (1).png
+A	apps/server/uploads/local_order_455a1fa4-22c0-4b24-aef5-fa1e1b895171/321be17a-9eca-4e50-89fc-8cfe10a040e9.jpg
+A	apps/server/uploads/local_order_455a1fa4-22c0-4b24-aef5-fa1e1b895171/4798f38b-da49-4327-bdde-30d26b35190d.jpg
+A	apps/server/uploads/local_order_455a1fa4-22c0-4b24-aef5-fa1e1b895171/9720873a-4a89-43ca-add1-3cdf28edc748.jpg
+A	apps/server/uploads/local_order_455a1fa4-22c0-4b24-aef5-fa1e1b895171/comprobante_1779071907921_image_2026-05-17_213825732.png
+A	apps/server/uploads/local_order_455a1fa4-22c0-4b24-aef5-fa1e1b895171/d2e8d916-7e5d-4004-9d08-4c123790ee41.jpg
+A	apps/server/uploads/local_order_8d925e98-0833-43c4-aa87-63491f7df69f/0fe93a35-524a-4d6e-a75c-df1f41018b7f.jpeg
+A	apps/server/uploads/local_order_8d925e98-0833-43c4-aa87-63491f7df69f/39e4d2e4-7341-4cce-94bd-be98c3dacef1.png
+A	apps/server/uploads/local_order_8d925e98-0833-43c4-aa87-63491f7df69f/comprobante_1779742026010_Cronograma  (1).png
+A	apps/server/uploads/local_order_942fc967-d45e-4cfb-86eb-83f344af25b4/037a4351-2fb2-4722-9758-a29287d59b12.png
+A	apps/server/uploads/local_order_942fc967-d45e-4cfb-86eb-83f344af25b4/38dce356-56c2-4905-acd8-3bd16d97e4bb.png
+A	apps/server/uploads/local_order_b13bfe2a-1aa2-47d3-9c03-0bc6559eaf4c/1d201bcf-8b04-4752-a00a-1ad6fa063b1a.jpg
+A	apps/server/uploads/local_order_b13bfe2a-1aa2-47d3-9c03-0bc6559eaf4c/531a1c06-d4e7-41e7-9f38-872a616d5734.jpg
+A	apps/server/uploads/local_order_b13bfe2a-1aa2-47d3-9c03-0bc6559eaf4c/bdc950c9-ee1a-4ac4-b0bc-d9a453b5ef9a.jpg
+A	apps/server/uploads/local_order_b13bfe2a-1aa2-47d3-9c03-0bc6559eaf4c/e7e66688-2fdb-454c-a37c-3289a1c31404.jpg
+A	apps/server/uploads/local_order_e0f31dc5-afdf-447b-ada8-3c106f8a0fd1/2a863485-fd35-44ce-a1f0-d1c7c254c7d9.jpg
+A	apps/server/uploads/local_order_e0f31dc5-afdf-447b-ada8-3c106f8a0fd1/8d2d6846-cbcb-455f-b34f-959ca10d1bfa.jpg
+A	arquitectura-sistema.md
+M	pnpm-lock.yaml
+
+COMMIT:f78ff21c2723b2858e9b784d08c517cfbe2a3ac2|AUTHOR:Julianpril|DATE:Wed May 20 14:30:00 2026 -0500|MSG:feat: flujo de pagos nequi, ajustes finales de checkout y configuracion global de rutas
+M	.gitignore
+A	apps/client/README.md
+A	apps/client/eslint.config.js
+A	apps/client/public/favicon.svg
+A	apps/client/public/icons.svg
+A	apps/client/src/api/index.ts
+A	apps/client/src/api/photosApi.ts
+A	apps/client/src/assets/hero.png
+A	apps/client/src/assets/react.svg
+A	apps/client/src/assets/vite.svg
+M	apps/client/src/features/checkout/CheckoutPage.tsx
+A	apps/client/src/features/checkout/index.ts
+M	apps/client/src/router/AppRouter.tsx
+M	apps/client/tsconfig.app.json
+M	apps/client/vite.config.ts
+A	apps/server/.env.example
+A	apps/server/src/config.ts
+A	apps/server/src/db/prisma.ts
+A	apps/server/src/middleware/authMiddleware.ts
+A	apps/server/src/models/photo.ts
+A	apps/server/tests/authMiddleware.test.ts
+A	apps/server/uploads/local_order_82ff681c-0fff-4dbb-80a1-e72ffbb0a1e3/5ce98210-0ce4-4e05-b0b4-6d1edc48e4bd.jpg
+A	apps/server/uploads/local_order_82ff681c-0fff-4dbb-80a1-e72ffbb0a1e3/72510922-7fb2-4a71-aaf4-d99a6181c296.jpg
+A	apps/server/uploads/local_order_82ff681c-0fff-4dbb-80a1-e72ffbb0a1e3/9c534940-db62-4348-80a3-371e45458eef.jpg
+A	apps/server/uploads/local_order_82ff681c-0fff-4dbb-80a1-e72ffbb0a1e3/b0d6d335-2391-448c-9aaa-8f83b93b3621.jpg
+A	apps/server/vitest.config.ts
+
+COMMIT:ccdffd8637a381763bd1e63db6468dc012c2989e|AUTHOR:lauestefany|DATE:Wed May 20 11:10:00 2026 -0500|MSG:feat: panel de administrador para gestionar ordenes y endpoints de actualizacion de pedidos
+A	apps/client/src/features/admin/AdminDashboardPage.tsx
+A	apps/client/src/features/admin/AdminLoginPage.tsx
+A	apps/client/src/features/admin/AdminSettingsPage.tsx
+A	apps/client/src/features/admin/components/OrderDetailsDrawer.tsx
+A	apps/client/src/features/admin/components/RejectOrderModal.tsx
+A	apps/client/src/features/admin/index.ts
+A	apps/server/src/controllers/authController.ts
+A	apps/server/src/controllers/orderController.ts
+A	apps/server/src/controllers/settingsController.ts
+A	apps/server/src/routes/authRoutes.ts
+A	apps/server/src/routes/orderRoutes.ts
+A	apps/server/src/routes/settingsRoutes.ts
+
+COMMIT:6be2b273e8f85a2bb91651e0dd10ad7c5163b03c|AUTHOR:AndrewEsp22|DATE:Tue May 19 16:20:00 2026 -0500|MSG:feat: integracion de la zona de subida de fotos, selector de formatos y resumen
+A	apps/client/src/features/photos/UploadPage.tsx
+A	apps/client/src/features/photos/components/FormatSelector.tsx
+A	apps/client/src/features/photos/components/OrderSummary.tsx
+A	apps/client/src/features/photos/components/UploadZone.tsx
+A	apps/client/src/features/photos/components/index.ts
+A	apps/client/src/features/photos/index.ts
+
+COMMIT:0a8cd060750b5775f4ddd80290e84a2cc75d708d|AUTHOR:kjmaya|DATE:Tue May 19 09:45:00 2026 -0500|MSG:feat: migracion de fotos a almacenamiento local y creacion de endpoints de descarga ZIP
+A	apps/server/src/controllers/photoController.ts
+A	apps/server/src/routes/photoRoutes.ts
+A	apps/server/src/services/catalog.ts
+A	apps/server/src/services/googleDrive.ts
+A	apps/server/src/services/upload.ts
+
+COMMIT:3ac62169a115f073ae91c0ff8c760450733f1a3e|AUTHOR:Julianpril|DATE:Mon May 18 15:15:00 2026 -0500|MSG:feat: mejoras en el hero section, cta, tabla de precios y barra de navegacion
+M	apps/client/src/features/landing/components/CtaSection.tsx
+M	apps/client/src/features/landing/components/HeroSection.tsx
+M	apps/client/src/features/landing/components/PricingSection.tsx
+M	apps/client/src/layout/Navbar.tsx
+M	apps/client/src/layout/RootLayout.tsx
+
+COMMIT:73070a861d6fe66aaf15fc9a43abacec08d5daac|AUTHOR:lauestefany|DATE:Mon May 18 10:30:00 2026 -0500|MSG:feat: inicializacion del servidor express y esquema de base de datos prisma
+A	apps/server/package.json
+A	apps/server/prisma/schema.prisma
+A	apps/server/prisma/seed.ts
+A	apps/server/src/index.ts
+A	apps/server/tsconfig.json
+A	pnpm-lock.yaml
+
+COMMIT:ac6eac57d81a27b086a405e9f87149b66d93d899|AUTHOR:lauestefany|DATE:Sun May 17 17:58:02 2026 -0500|MSG:implementar nequi payment instructions and receipt upload UI
+A	apps/client/src/features/payments/NequiPaymentPage.tsx
+A	apps/client/src/features/payments/PaymentStatusPage.tsx
+A	apps/client/src/features/payments/index.ts
+
+COMMIT:af0d4c4a6484f2f0f8622fa4418991ab43481975|AUTHOR:AndrewEsp22|DATE:Sun May 17 17:20:38 2026 -0500|MSG:integrar los municipios de DANE y finalizar la l├│gica de env├¡o de pedidos
+A	apps/client/src/data/colombia.json
+A	apps/client/src/features/checkout/CheckoutPage.tsx
+
+COMMIT:1879a552153deccdbfb5ca6276175792a1367d8a|AUTHOR:kjmaya|DATE:Sun May 17 17:16:54 2026 -0500|MSG:agregar paginaci├│n, cuadr├¡cula de formato mini y rotaci├│n de im├ígenes individuales
+A	apps/client/src/features/photos/components/PolaroidPreview.tsx
+
+COMMIT:bf81ed18dc709cc233fe0f71f039f670ab3401db|AUTHOR:Julianpril|DATE:Thu May 14 11:20:02 2026 -0500|MSG:feat: implementacion progresiva de las pantallas (UI)
+A	apps/client/src/features/landing/LandingPage.tsx
+A	apps/client/src/features/landing/components/CtaSection.tsx
+A	apps/client/src/features/landing/components/HeroSection.tsx
+A	apps/client/src/features/landing/components/PricingSection.tsx
+A	apps/client/src/features/landing/components/TrustSection.tsx
+A	apps/client/src/features/landing/components/ValuePropsSection.tsx
+A	apps/client/src/features/landing/components/index.ts
+A	apps/client/src/features/landing/index.ts
+
+COMMIT:4eab522c8a994686c4696deb54973f36828afed8|AUTHOR:Julianpril|DATE:Thu May 14 11:20:01 2026 -0500|MSG:feat: design system y componentes de layout base
+A	apps/client/src/index.css
+A	apps/client/src/layout/Footer.tsx
+A	apps/client/src/layout/Navbar.tsx
+A	apps/client/src/layout/RootLayout.tsx
+A	apps/client/src/layout/index.ts
+
+COMMIT:0aa75784b923e8bb8eb9a342978ad4cf2e6795be|AUTHOR:Julianpril|DATE:Thu May 14 11:20:01 2026 -0500|MSG:feat: enrutamiento y entrada base de la aplicacion
+A	apps/client/index.html
+A	apps/client/src/App.tsx
+A	apps/client/src/main.tsx
+A	apps/client/src/router/AppRouter.tsx
+A	apps/client/src/router/index.ts
+
+COMMIT:e77dd07f2df98c8091ed655f7ebb907d29191ad6|AUTHOR:Julianpril|DATE:Thu May 14 11:20:01 2026 -0500|MSG:chore: configuracion de arquitectura monorepo y typescript
+A	.gitignore
+A	apps/client/.gitignore
+A	apps/client/package.json
+A	apps/client/tsconfig.app.json
+A	apps/client/tsconfig.json
+A	apps/client/tsconfig.node.json
+A	apps/client/vite.config.ts
+A	package.json
+A	pnpm-workspace.yaml
