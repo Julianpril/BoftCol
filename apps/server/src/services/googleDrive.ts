@@ -7,14 +7,11 @@ import { config } from '../config.js';
 
 let driveClient: drive_v3.Drive | null = null;
 
-/**
- * Initializes the Google Drive client using Service Account credentials.
- * Supports both a key file path and inline credentials from env vars.
- */
+/** Inicializa el cliente de Google Drive. Acepta archivo de credenciales o variables de entorno. */
 function getAuthClient() {
   const { serviceAccountKeyFile, clientEmail, privateKey } = config.google;
 
-  // Option A: key file
+  // Opción A: archivo de credenciales
   if (serviceAccountKeyFile) {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const resolvedPath = path.resolve(__dirname, '../../', serviceAccountKeyFile);
@@ -28,7 +25,7 @@ function getAuthClient() {
     console.warn(`[GoogleDrive] Key file not found at: ${resolvedPath}`);
   }
 
-  // Option B: inline credentials
+  // Opción B: credenciales en variables de entorno
   if (clientEmail && privateKey) {
     const auth = new google.auth.GoogleAuth({
       credentials: {
@@ -44,9 +41,7 @@ function getAuthClient() {
   return null;
 }
 
-/**
- * Gets a singleton Google Drive client instance.
- */
+/** Devuelve el cliente singleton de Drive, lo inicializa si aún no existe. */
 export function getDriveClient(): drive_v3.Drive | null {
   if (driveClient) return driveClient;
 
@@ -66,10 +61,7 @@ export interface UploadResult {
   thumbnailLink: string;
 }
 
-/**
- * Uploads a file buffer to Google Drive inside the configured folder.
- * Creates a per-order subfolder to keep things organized.
- */
+/** Sube un archivo a Drive dentro de la carpeta configurada. Crea una subcarpeta por pedido para no mezclar archivos. */
 export async function uploadFileToDrive(
   fileBuffer: Buffer,
   fileName: string,
@@ -81,10 +73,10 @@ export async function uploadFileToDrive(
     throw new Error('Google Drive not configured. Set GOOGLE_SERVICE_ACCOUNT_KEY_FILE or inline credentials in .env');
   }
 
-  // Find or create the order subfolder
+  // Buscamos (o creamos) la subcarpeta del pedido
   const folderId = await getOrCreateOrderFolder(drive, orderId);
 
-  // Upload the file
+  // Subimos el archivo
   const response = await drive.files.create({
     requestBody: {
       name: fileName,
@@ -110,9 +102,7 @@ export async function uploadFileToDrive(
   };
 }
 
-/**
- * Gets or creates a subfolder for an order inside the root Drive folder.
- */
+/** Busca o crea la subcarpeta del pedido dentro de la carpeta raíz de Drive. */
 async function getOrCreateOrderFolder(
   drive: drive_v3.Drive,
   orderId: string,
@@ -120,7 +110,7 @@ async function getOrCreateOrderFolder(
   const parentFolderId = config.google.driveFolderId;
   const folderName = `order_${orderId}`;
 
-  // Check if folder exists
+  // Verificamos si ya existe la carpeta
   const search = await drive.files.list({
     q: `name='${folderName}' and '${parentFolderId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
     fields: 'files(id)',
@@ -131,7 +121,7 @@ async function getOrCreateOrderFolder(
     return search.data.files[0].id!;
   }
 
-  // Create the folder
+  // La creamos si no existía
   const folder = await drive.files.create({
     requestBody: {
       name: folderName,
@@ -144,9 +134,7 @@ async function getOrCreateOrderFolder(
   return folder.data.id!;
 }
 
-/**
- * Deletes a file from Google Drive.
- */
+/** Elimina un archivo de Google Drive. */
 export async function deleteFileFromDrive(fileId: string): Promise<void> {
   const drive = getDriveClient();
   if (!drive) return;
@@ -185,10 +173,7 @@ export interface QrUploadResult {
   publicUrl: string;
 }
 
-/**
- * Uploads the Nequi QR image to the Drive 'settings/' subfolder.
- * Makes the file publicly readable and returns its direct image URL.
- */
+/** Sube el QR de Nequi a la carpeta 'settings/' en Drive, lo hace público y devuelve la URL directa. */
 export async function uploadQrToDrive(
   fileBuffer: Buffer,
   mimeType: string,

@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const [shippingCost, setShippingCost] = useState(2900);
 
   useEffect(() => {
-    // Fetch shipping settings
+    // Traemos el costo de envío desde la configuración
     fetchSettings().then(settings => {
       if (settings.shippingCost) {
         setShippingCost(settings.shippingCost);
@@ -65,7 +65,7 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     
     try {
-      // Connect to the actual backend DB endpoint
+      // Guardamos el pedido en la base de datos
       const response = await fetch('/api/orders/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,10 +104,10 @@ export default function CheckoutPage() {
       
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
-        {/* Left Column: Checkout Details */}
+        {/* Columna izquierda: datos del pedido */}
         <div className="lg:col-span-7 flex flex-col gap-8 md:gap-12">
           
-          {/* Delivery Section */}
+          {/* Sección de entrega */}
           <section className="bg-surface-container rounded-2xl p-6 md:p-8 border border-outline-variant/20 shadow-lg">
             <div className="flex items-center gap-3 mb-6 md:mb-8">
               <span className="material-symbols-outlined text-primary-fixed">local_shipping</span>
@@ -207,7 +207,7 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          {/* Product Info Section */}
+          {/* Info del producto */}
           <section className="bg-surface-container-low rounded-2xl p-6 md:p-8 border border-outline-variant/10">
             <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
               <div className="w-full md:w-1/3 aspect-square bg-surface-container-highest rounded-xl overflow-hidden relative group">
@@ -232,7 +232,7 @@ export default function CheckoutPage() {
 
         </div>
 
-        {/* Right Column: Sticky Summary */}
+        {/* Columna derecha: resumen fijo */}
         <aside className="lg:col-span-5 lg:sticky lg:top-28 flex flex-col gap-6">
           <div className="bg-surface-container-high rounded-2xl p-6 md:p-8 border border-primary-fixed/20 shadow-2xl shadow-primary-fixed/10">
             <h2 className="font-headline text-xl md:text-2xl font-semibold mb-6 md:mb-8">Resumen de compra</h2>
@@ -255,7 +255,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Progress/Verification */}
+            {/* Barra de progreso */}
             <div className="flex flex-col gap-3 mb-6 md:mb-8">
               <div className="flex justify-between text-xs font-label font-semibold">
                 <span className="text-primary-fixed tracking-wider">VERIFICACIÓN DE ARCHIVOS</span>
@@ -272,9 +272,9 @@ export default function CheckoutPage() {
             <button 
               type="submit"
               disabled={!isFormValid || isSubmitting}
-              className={`w-full font-bold py-4 md:py-5 rounded-full text-base md:text-lg flex items-center justify-center gap-3 transition-all duration-300
+              className={`w-full font-bold py-4 md:py-5 rounded-full text-base md:text-lg flex items-center justify-center gap-3 transition-[transform,box-shadow] duration-150 ease-out
                 ${isFormValid && !isSubmitting
-                  ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[1.02] active:scale-95 shadow-xl shadow-primary-fixed/20 group cursor-pointer' 
+                  ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[1.02] active:scale-[0.97] shadow-xl shadow-primary-fixed/20 group cursor-pointer'
                   : 'bg-surface-container-highest text-on-surface-variant/40 cursor-not-allowed'}`}
             >
               {isSubmitting ? (

@@ -63,7 +63,7 @@ export default function CtaSection() {
             onClick={() => navigate('/upload')}
             className="bg-surface text-primary-fixed px-8 sm:px-10 md:px-12 py-4 md:py-5 lg:py-6 rounded-full
               font-label text-base md:text-lg lg:text-xl font-semibold tracking-wide
-              hover:bg-surface-bright active:scale-95 transition-all duration-200
+              hover:bg-surface-bright hover:scale-[1.02] active:scale-[0.97] transition-[transform,background-color] duration-150 ease-out
               shadow-2xl shadow-black/30 cursor-pointer opacity-0"
             style={{ animationDelay: '240ms' }}
           >

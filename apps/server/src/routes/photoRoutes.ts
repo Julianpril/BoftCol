@@ -11,12 +11,12 @@ import {
 
 const router = Router();
 
-// Catalog
+// Catálogo
 router.get('/formats', getFormats);
 router.get('/pricing', getPricing);
 router.get('/price', getPrice);
 
-// Upload & Delete
+// Subida y borrado
 router.post('/upload', upload.array('photos', 50), uploadPhotos);
 router.get('/download/:folderId', downloadOrderPhotos);
 router.delete('/:fileId', deletePhoto);

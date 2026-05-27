@@ -1,7 +1,4 @@
-/**
- * Photo format types available for printing.
- * In the future, these come from a database.
- */
+/** Formatos de foto disponibles para impresión. */
 export interface PhotoFormat {
   id: string;
   name: string;
@@ -10,18 +7,14 @@ export interface PhotoFormat {
   photosPerPrint: number;
 }
 
-/**
- * Pricing tier based on number of photos.
- */
+/** Franja de precios según cantidad de fotos. */
 export interface PriceTier {
   photos: number;
   price: number;
   perPhoto: number;
 }
 
-/**
- * Uploaded photo metadata.
- */
+/** Metadatos de una foto subida. */
 export interface UploadedPhoto {
   id: string;
   originalName: string;
@@ -33,9 +26,7 @@ export interface UploadedPhoto {
   uploadedAt: string;
 }
 
-/**
- * Order in progress.
- */
+/** Pedido en curso. */
 export interface PhotoOrder {
   orderId: string;
   formatId: string;

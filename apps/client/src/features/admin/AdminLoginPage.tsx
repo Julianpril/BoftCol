@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { adminLogin } from '@/api';
 
 export default function AdminLoginPage() {
@@ -26,6 +26,12 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4">
+      <div className="w-full max-w-md mb-4">
+        <Link to="/" className="flex items-center gap-2 text-on-surface-variant hover:text-primary-fixed transition-colors w-max text-sm font-semibold">
+          <span className="material-symbols-outlined text-base">arrow_back</span>
+          Volver al inicio
+        </Link>
+      </div>
       <div className="w-full max-w-md bg-surface-container-high p-8 rounded-2xl border border-outline-variant/20 shadow-2xl">
         <div className="text-center mb-8">
           <h1 className="text-headline-md font-black text-primary-container mb-2">BOFT ADMIN</h1>

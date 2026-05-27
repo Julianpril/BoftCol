@@ -2,10 +2,7 @@ import multer from 'multer';
 import { config } from '../config.js';
 import type { Request } from 'express';
 
-/**
- * Multer configuration: stores files in memory (Buffer) for
- * streaming directly to Google Drive without touching disk.
- */
+/** Multer guarda los archivos en memoria para subirlos sin escribir nada al disco. */
 const storage = multer.memoryStorage();
 
 function fileFilter(_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) {

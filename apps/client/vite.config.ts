@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
@@ -12,6 +11,9 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: [
+      'brock-prenegligent-judson.ngrok-free.dev'
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:4000',

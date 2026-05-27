@@ -23,7 +23,7 @@ export async function updateOrderStatus(id: string, status: string, rejectReason
   return res.json();
 }
 
-// ─── Admin auth helpers ───
+// ─── Autenticación del admin ───
 
 export async function adminLogin(email: string, password: string): Promise<{ token: string; expiresAt: string }> {
   const res = await fetch('/api/auth/login', {
@@ -73,6 +73,53 @@ export async function uploadQrSetting(file: File): Promise<{ nequiQrUrl: string 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error((body as any).error || 'Error al subir QR');
+  }
+  return res.json();
+}
+
+// ─── API de códigos ───
+
+export async function fetchAdminCodes() {
+  const res = await adminFetch('/api/admin/codes');
+  if (!res.ok) throw new Error('Error fetching codes');
+  return res.json();
+}
+
+export async function createAdminCode(code: string, value: number, expiresAt?: string) {
+  const res = await adminFetch('/api/admin/codes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, value, expiresAt })
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body as any).error || 'Error creando código');
+  }
+  return res.json();
+}
+
+export async function updateAdminCode(id: string, data: { code?: string; value?: number; isUsed?: boolean; expiresAt?: string }) {
+  const res = await adminFetch(`/api/admin/codes/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body as any).error || 'Error actualizando código');
+  }
+  return res.json();
+}
+
+export async function bulkUploadAdminCodes(codes: { code: string, value: number, expiresAt?: string }[]) {
+  const res = await adminFetch('/api/admin/codes/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ codes })
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body as any).error || 'Error subiendo códigos');
   }
   return res.json();
 }

@@ -19,7 +19,7 @@ export default function OrderSummary({
 
   return (
     <div className="bg-surface-container-highest rounded-2xl p-5 md:p-6 flex flex-col gap-4 border-t-4 border-primary-fixed">
-      {/* Photo count */}
+      {/* Cantidad de fotos */}
       <div className="flex justify-between items-center">
         <span className="font-body text-sm text-on-surface-variant">Fotos seleccionadas:</span>
         <span className="font-label text-sm font-semibold text-on-surface">
@@ -27,7 +27,7 @@ export default function OrderSummary({
         </span>
       </div>
 
-      {/* Minimum notice */}
+      {/* Aviso de mínimo */}
       {photoCount > 0 && photoCount < 2 && (
         <p className="font-label text-xs text-secondary px-3 py-2 bg-secondary/10 rounded-lg text-center">
           Mínimo 2 fotos para continuar
@@ -42,15 +42,15 @@ export default function OrderSummary({
         </span>
       </div>
 
-      {/* CTA */}
+      {/* Botón de acción */}
       <button
         type="button"
         onClick={onNext}
         disabled={!canProceed}
         className={`w-full py-4 md:py-5 rounded-full font-display text-base md:text-lg font-extrabold uppercase tracking-wider
-          transition-all duration-200 mt-2 cursor-pointer
+          transition-[transform,box-shadow] duration-150 ease-out mt-2
           ${canProceed
-            ? 'bg-primary-fixed text-on-primary-fixed hover:shadow-lg hover:shadow-primary-fixed/20 active:scale-[0.98]'
+            ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-fixed/20 active:scale-[0.97] cursor-pointer'
             : 'bg-surface-container-high text-on-surface-variant/40 cursor-not-allowed'
           }`}
       >

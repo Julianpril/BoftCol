@@ -1,17 +1,20 @@
 import { Router } from 'express';
-import { createOrder, uploadReceipt, getOrders, updateOrderStatus } from '../controllers/orderController.js';
+import { createOrder, uploadReceipt, getReceiptImage, getOrders, updateOrderStatus } from '../controllers/orderController.js';
 import { upload } from '../services/upload.js';
 
 const router: Router = Router();
 
-// Admin routes
+// Rutas del admin
 router.get('/', getOrders);
 router.patch('/:id/status', updateOrderStatus);
 
-// Create a new order in DB
+// Crear pedido en la DB
 router.post('/checkout', createOrder);
 
-// Upload payment receipt
+// Subir comprobante de pago
 router.post('/:id/receipt', upload.single('receipt'), uploadReceipt);
+
+// Servir la imagen del comprobante
+router.get('/:id/receipt-image', getReceiptImage);
 
 export default router;

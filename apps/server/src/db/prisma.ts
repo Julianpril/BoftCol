@@ -4,7 +4,7 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Singleton Prisma connection
+// Reutilizamos la misma instancia para no abrir conexiones de más
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient();

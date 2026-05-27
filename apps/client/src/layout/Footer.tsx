@@ -12,9 +12,9 @@ const socialLinks = [
 export default function Footer() {
   return (
     <footer className="bg-surface-container-lowest border-t border-outline-variant/20">
-      {/* Main Footer */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4 w-full px-4 md:px-6 py-16 md:py-20 max-w-[1200px] mx-auto">
-        {/* Brand Column */}
+      {/* Pie de página */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4 w-full px-4 md:px-6 py-16 md:py-20 max-w-300 mx-auto">
+        {/* Columna de marca */}
         <div className="flex flex-col gap-5">
           <div className="font-headline text-xl md:text-2xl font-bold text-on-surface">
             BOFT COLOMBIA
@@ -22,7 +22,7 @@ export default function Footer() {
           <p className="font-body text-base text-on-surface-variant max-w-sm leading-relaxed">
             La forma más fácil y rápida de imprimir tus fotos en formato Polaroid en Colombia. De la pantalla a tus manos.
           </p>
-          {/* Social Icons Row */}
+          {/* Redes sociales */}
           <div className="flex gap-4 mt-2">
             <a
               href="https://instagram.com"
@@ -51,7 +51,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Links Columns */}
+        {/* Columnas de enlaces */}
         <div className="grid grid-cols-2 gap-8">
           <div className="flex flex-col gap-4">
             <h4 className="font-label text-xs font-semibold tracking-[0.08em] uppercase text-primary-fixed">
@@ -88,8 +88,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-6 border-t border-outline-variant/10 text-center">
+      {/* Barra inferior */}
+      <div className="max-w-300 mx-auto px-4 md:px-6 py-6 border-t border-outline-variant/10 text-center">
         <p className="font-label text-xs text-on-surface-variant/50 tracking-wider">
           © {new Date().getFullYear()} BOFT COLOMBIA. TODOS LOS DERECHOS RESERVADOS. PRINT YOUR HIGHLIGHTS.
         </p>

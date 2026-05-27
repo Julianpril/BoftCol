@@ -13,7 +13,7 @@ import type { LocalPhoto } from './components';
 const MAX_FILES = 50;
 
 export default function UploadPage() {
-  // ─── State ───
+  // ─── Estado ───
   const [formats, setFormats] = useState<PhotoFormat[]>([]);
   const [formatsLoading, setFormatsLoading] = useState(true);
   const [selectedFormatId, setSelectedFormatId] = useState('standard');
@@ -21,7 +21,7 @@ export default function UploadPage() {
   const [totalPrice, setTotalPrice] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // ─── Load formats from API ───
+  // ─── Cargamos los formatos disponibles ───
   useEffect(() => {
     fetchFormats()
       .then((data) => {
@@ -32,7 +32,7 @@ export default function UploadPage() {
       .finally(() => setFormatsLoading(false));
   }, []);
 
-  // ─── Recalculate price when photo count changes ───
+  // ─── Recalculamos el precio cada vez que cambia la cantidad ───
   useEffect(() => {
     if (photos.length === 0) {
       setTotalPrice(null);
@@ -44,7 +44,7 @@ export default function UploadPage() {
       .catch(() => setTotalPrice(null));
   }, [photos.length]);
 
-  // ─── Handlers ───
+  // ─── Manejadores ───
   const handleAddPhotos = useCallback((files: File[]) => {
     setPhotos((prev) => {
       const remaining = MAX_FILES - prev.length;
@@ -72,7 +72,7 @@ export default function UploadPage() {
     setIsUploading(true);
 
     try {
-      // 1. Upload photos to backend (which uploads to Drive)
+      // 1. Subimos las fotos al servidor
       const formData = new FormData();
       photos.forEach(p => {
         formData.append('photos', p.file);
@@ -107,7 +107,7 @@ export default function UploadPage() {
     }
   }, [photos, selectedFormatId, totalPrice, navigate]);
 
-  // ─── Cleanup object URLs on unmount ───
+  // ─── Limpiamos las URLs de objeto al desmontar ───
   useEffect(() => {
     return () => {
       photos.forEach((p) => URL.revokeObjectURL(p.preview));
@@ -116,9 +116,9 @@ export default function UploadPage() {
   }, []);
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 pt-24 md:pt-28">
+    <div className="max-w-300 mx-auto px-4 md:px-6 py-8 md:py-12 pt-24 md:pt-28">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-        {/* Left: Upload Zone (takes 8 columns on desktop) */}
+        {/* Zona de subida (8 columnas en escritorio) */}
         <div className="lg:col-span-8">
           <UploadZone
             photos={photos}
@@ -129,7 +129,7 @@ export default function UploadPage() {
           />
         </div>
 
-        {/* Right: Sidebar (takes 4 columns on desktop) */}
+        {/* Sidebar derecho (4 columnas en escritorio) */}
         <aside className="lg:col-span-4 flex flex-col gap-6">
           <FormatSelector
             formats={formats}

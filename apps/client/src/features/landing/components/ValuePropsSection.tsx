@@ -61,12 +61,12 @@ export default function ValuePropsSection() {
               key={card.title}
               data-animate
               className="bg-surface-container p-8 md:p-10 rounded-2xl border border-outline-variant/20
-                hover:border-primary-fixed/50 transition-all duration-300 group opacity-0"
-              style={{ animationDelay: `${index * 120}ms` }}
+                hover:border-primary-fixed/50 transition-[border-color,box-shadow] duration-200 ease-out group opacity-0"
+              style={{ animationDelay: `${index * 70}ms` }}
             >
               {/* Icon */}
               <div className="w-14 h-14 md:w-16 md:h-16 bg-primary-fixed/10 rounded-2xl flex items-center justify-center mb-6 md:mb-8
-                group-hover:scale-110 group-hover:bg-primary-fixed/15 transition-all duration-300">
+                group-hover:scale-[1.08] group-hover:bg-primary-fixed/15 transition-[transform,background-color] duration-200 ease-out">
                 <span
                   className="material-symbols-outlined text-primary-fixed text-3xl md:text-4xl"
                 >

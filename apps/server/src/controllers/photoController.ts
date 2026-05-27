@@ -8,32 +8,23 @@ const archiver = require('archiver') as typeof import('archiver');
 import { uploadFileToDrive, deleteFileFromDrive } from '../services/googleDrive.js';
 import { PHOTO_FORMATS, getPricingTiers, calculatePrice } from '../services/catalog.js';
 
-/**
- * GET /api/photos/formats
- * Returns available photo formats.
- */
+/** GET /api/photos/formats — Devuelve los formatos disponibles. */
 export async function getFormats(_req: Request, res: Response) {
   res.json({ formats: PHOTO_FORMATS });
 }
 
-/**
- * GET /api/photos/pricing
- * Returns full pricing table.
- */
+/** GET /api/photos/pricing — Devuelve la tabla de precios completa. */
 export async function getPricing(_req: Request, res: Response) {
   try {
     const tiers = await getPricingTiers();
-    // Maps the DB schema to the frontend expected format
+    // Adaptamos el esquema de DB al formato que espera el cliente
     res.json({ tiers: tiers.map((t: any) => ({ photos: t.photoCount, price: t.price, perPhoto: t.perPhoto })) });
   } catch (error) {
     res.status(500).json({ error: 'Error fetching pricing' });
   }
 }
 
-/**
- * GET /api/photos/price?count=6
- * Calculates price for a specific photo count.
- */
+/** GET /api/photos/price?count=6 — Calcula el precio para una cantidad de fotos. */
 export async function getPrice(req: Request, res: Response) {
   const count = parseInt(req.query.count as string, 10);
 
@@ -51,12 +42,7 @@ export async function getPrice(req: Request, res: Response) {
   res.json(result);
 }
 
-/**
- * POST /api/photos/upload
- * Uploads one or more photos to the local server storage.
- * Body: multipart/form-data with field "photos" (array of files)
- * Query: ?orderId=xxx (optional, auto-generated if not provided)
- */
+/** POST /api/photos/upload — Sube una o varias fotos al almacenamiento local. */
 export async function uploadPhotos(req: Request, res: Response) {
   try {
     const files = req.files as Express.Multer.File[];
@@ -94,14 +80,14 @@ export async function uploadPhotos(req: Request, res: Response) {
           size: file.size,
           driveFileId: fileId,
           driveFolderId,
-          driveViewLink: '', // No web link since it's local
+          driveViewLink: '', // Sin enlace web, el archivo es local
           thumbnailUrl: '',
           uploadedAt: new Date().toISOString(),
         };
       }),
     );
 
-    // Calculate price for the uploaded count
+    // Calculamos el precio según las fotos que llegaron
     const priceInfo = await calculatePrice(uploadResults.length);
 
     res.status(201).json({
@@ -118,10 +104,7 @@ export async function uploadPhotos(req: Request, res: Response) {
   }
 }
 
-/**
- * DELETE /api/photos/:fileId
- * Removes a photo from Google Drive.
- */
+/** DELETE /api/photos/:fileId — Elimina una foto del servidor. */
 export async function deletePhoto(req: Request, res: Response) {
   try {
     const fileId = req.params.fileId as string;
@@ -140,10 +123,7 @@ export async function deletePhoto(req: Request, res: Response) {
   }
 }
 
-/**
- * GET /api/photos/download/:folderId
- * Downloads all photos from a local folder as a ZIP file
- */
+/** GET /api/photos/download/:folderId — Descarga todas las fotos del pedido en un ZIP. */
 export async function downloadOrderPhotos(req: Request, res: Response) {
   try {
     const folderId = req.params.folderId as string;

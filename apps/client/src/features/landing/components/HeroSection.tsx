@@ -91,7 +91,7 @@ export default function HeroSection() {
             id="hero-cta-primary"
             onClick={() => navigate('/upload')}
             className="bg-primary-fixed text-on-primary-fixed px-8 md:px-10 py-4 md:py-5 rounded-full font-label text-base md:text-lg font-semibold tracking-wide
-              hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-primary-fixed/20 cursor-pointer"
+              hover:scale-[1.02] active:scale-[0.97] transition-transform duration-150 ease-out shadow-lg shadow-primary-fixed/20 cursor-pointer"
           >
             Imprimir mis fotos
           </button>
@@ -101,7 +101,7 @@ export default function HeroSection() {
               document.getElementById('precios')?.scrollIntoView({ behavior: 'smooth' });
             }}
             className="border-2 border-primary-fixed text-primary-fixed px-8 md:px-10 py-4 md:py-5 rounded-full font-label text-base md:text-lg font-semibold tracking-wide
-              hover:bg-primary-fixed/5 active:scale-95 transition-all duration-200 cursor-pointer"
+              hover:bg-primary-fixed/5 active:scale-[0.97] transition-[transform,background-color] duration-150 ease-out cursor-pointer"
           >
             Ver formatos
           </button>
@@ -119,8 +119,8 @@ export default function HeroSection() {
             {col0.map((card, i) => (
               <div
                 key={i}
-                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-500 hover:!rotate-0"
-                style={{ transform: `rotate(${card.rotation})${i === 1 ? ' translateX(16px)' : ''}` }}
+                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-300 hover:!rotate-0 hover:scale-[1.02]"
+                style={{ transform: `rotate(${card.rotation})${i === 1 ? ' translateX(16px)' : ''}`, transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
               >
                 <img
                   src={card.src}
@@ -137,8 +137,8 @@ export default function HeroSection() {
             {col1.map((card, i) => (
               <div
                 key={i}
-                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-500 hover:!rotate-0"
-                style={{ transform: `rotate(${card.rotation})${i === 1 ? ' translateX(-8px)' : ''}` }}
+                className="bg-white p-2 md:p-3 pb-8 md:pb-12 photo-card-shadow transition-transform duration-300 hover:!rotate-0 hover:scale-[1.02]"
+                style={{ transform: `rotate(${card.rotation})${i === 1 ? ' translateX(-8px)' : ''}`, transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
               >
                 <img
                   src={card.src}

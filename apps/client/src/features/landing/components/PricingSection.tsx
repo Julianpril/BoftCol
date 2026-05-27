@@ -32,7 +32,7 @@ const allTiers: PriceTier[] = [
   { photos: 50, price: 100000, perPhoto: 2000 },
 ];
 
-// Featured tiers for the highlight cards
+// Los tres planes que mostramos destacados en las tarjetas
 const featuredTiers = [
   { ...allTiers[0],  label: 'Pruébalo',  badge: null },
   { ...allTiers[4],  label: 'Popular',   badge: 'MÁS POPULAR' },
@@ -70,9 +70,9 @@ export default function PricingSection() {
     <section
       ref={sectionRef}
       id="precios"
-      className="max-w-[1200px] mx-auto px-4 md:px-6 py-16 md:py-20"
+      className="max-w-300 mx-auto px-4 md:px-6 py-16 md:py-20"
     >
-      {/* Section Header */}
+      {/* Encabezado de sección */}
       <div className="text-center mb-12 md:mb-16">
         <h2
           data-animate
@@ -89,7 +89,7 @@ export default function PricingSection() {
         </p>
       </div>
 
-      {/* Featured Pricing Cards */}
+      {/* Tarjetas de planes destacados */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mb-12 md:mb-16">
         {featuredTiers.map((tier, index) => {
           const isPopular = tier.badge === 'MÁS POPULAR';
@@ -97,14 +97,14 @@ export default function PricingSection() {
             <div
               key={tier.photos}
               data-animate
-              className={`relative rounded-2xl p-6 md:p-8 border transition-all duration-300 opacity-0
+              className={`relative rounded-2xl p-6 md:p-8 border transition-[border-color,box-shadow,transform] duration-200 ease-out opacity-0
                 ${isPopular
                   ? 'bg-primary-fixed/5 border-primary-fixed shadow-lg shadow-primary-fixed/10 scale-[1.02] md:scale-105'
-                  : 'bg-surface-container border-outline-variant/20 hover:border-primary-fixed/40'
+                  : 'bg-surface-container border-outline-variant/20 hover:border-primary-fixed/40 hover:shadow-md hover:shadow-primary-fixed/5'
                 }`}
-              style={{ animationDelay: `${index * 120}ms` }}
+              style={{ animationDelay: `${index * 80}ms` }}
             >
-              {/* Badge */}
+              {/* Etiqueta */}
               {tier.badge && (
                 <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-semibold tracking-wider
                   ${isPopular
@@ -115,7 +115,7 @@ export default function PricingSection() {
                 </div>
               )}
 
-              {/* Card Header */}
+              {/* Cabecera de la tarjeta */}
               <div className="text-center mb-6">
                 <p className="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-wider mb-2">
                   {tier.label}
@@ -128,7 +128,7 @@ export default function PricingSection() {
                 </div>
               </div>
 
-              {/* Price */}
+              {/* Precio */}
               <div className="text-center mb-6 pb-6 border-b border-outline-variant/20">
                 <p className="font-headline text-2xl md:text-3xl font-bold text-white">
                   {formatCOP(tier.price)}
@@ -138,7 +138,7 @@ export default function PricingSection() {
                 </p>
               </div>
 
-              {/* Features */}
+              {/* Características incluidas */}
               <ul className="space-y-3 mb-8">
                 {[
                   'Impresión Polaroid premium',
@@ -156,13 +156,13 @@ export default function PricingSection() {
                 ))}
               </ul>
 
-              {/* CTA */}
+              {/* Botón de acción */}
               <button
                 onClick={() => navigate('/upload')}
-                className={`w-full py-3.5 rounded-full font-label text-sm font-semibold tracking-wider uppercase transition-all duration-200 cursor-pointer
+                className={`w-full py-3.5 rounded-full font-label text-sm font-semibold tracking-wider uppercase transition-[transform,background-color] duration-150 ease-out cursor-pointer
                   ${isPopular
-                    ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[0.98] shadow-md shadow-primary-fixed/20'
-                    : 'border-2 border-primary-fixed/60 text-primary-fixed hover:bg-primary-fixed/5'
+                    ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[0.98] active:scale-[0.96] shadow-md shadow-primary-fixed/20'
+                    : 'border-2 border-primary-fixed/60 text-primary-fixed hover:bg-primary-fixed/5 active:scale-[0.97]'
                   }`}
               >
                 Ordenar ahora
@@ -172,7 +172,7 @@ export default function PricingSection() {
         })}
       </div>
 
-      {/* See All Prices Toggle */}
+      {/* Botón para mostrar/ocultar la tabla completa */}
       <div className="text-center">
         <button
           onClick={() => setShowAll(!showAll)}
@@ -187,11 +187,12 @@ export default function PricingSection() {
         </button>
       </div>
 
-      {/* Full Pricing Table */}
+      {/* Tabla de precios completa */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${
-          showAll ? 'max-h-[2000px] opacity-100 mt-8' : 'max-h-0 opacity-0 mt-0'
+        className={`overflow-hidden transition-[max-height,opacity] duration-500 ${
+          showAll ? 'max-h-500 opacity-100 mt-8' : 'max-h-0 opacity-0 mt-0'
         }`}
+        style={{ transitionTimingFunction: showAll ? 'cubic-bezier(0.23, 1, 0.32, 1)' : 'cubic-bezier(0.77, 0, 0.175, 1)' }}
       >
         <div className="overflow-x-auto rounded-2xl border border-outline-variant/20">
           <table className="w-full text-left">
@@ -219,7 +220,7 @@ export default function PricingSection() {
                   <tr
                     key={tier.photos}
                     className={`border-t border-outline-variant/10 transition-colors hover:bg-surface-container-high/50
-                      ${isHighlighted ? 'bg-primary-fixed/[0.03]' : ''}`}
+                      ${isHighlighted ? 'bg-primary-fixed/3' : ''}`}
                   >
                     <td className="px-5 py-3.5">
                       <span className="font-label text-sm font-semibold text-white">

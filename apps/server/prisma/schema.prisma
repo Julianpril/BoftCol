@@ -71,3 +71,51 @@ model PriceTier {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model SupportSession {
+  id        String           @id @default(uuid())
+  messages  SupportMessage[]
+  receipts  Receipt[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model SupportMessage {
+  id               String         @id @default(uuid())
+  sessionId        String
+  session          SupportSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role             Role           // 'user' or 'assistant'
+  content          String
+  requiresReceipt  Boolean        @default(false)
+  printCode        String?
+  createdAt        DateTime       @default(now())
+}
+
+enum Role {
+  user
+  assistant
+}
+
+model Receipt {
+  id               String         @id @default(uuid())
+  sessionId        String
+  session          SupportSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  referenceNumber  String         @unique
+  amount           Float
+  senderName       String?
+  receiverName     String?
+  date             DateTime?
+  status           String         @default("VALIDATED") // VALIDATED, REJECTED, PENDING
+  imageUrl         String?
+  createdAt        DateTime       @default(now())
+}
+
+model PrintCode {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  value       Float    // Costo equivalente, ej: 6000
+  isUsed      Boolean  @default(false)
+  expiresAt   DateTime // Fecha de vencimiento
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

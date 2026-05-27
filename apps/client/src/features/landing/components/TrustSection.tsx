@@ -66,7 +66,7 @@ export default function TrustSection() {
               src={avatar.src}
               alt={avatar.alt}
               className="w-11 h-11 md:w-12 md:h-12 rounded-full border-[3px] border-background object-cover
-                hover:scale-110 hover:z-10 transition-transform duration-200"
+                hover:scale-[1.15] hover:z-10 transition-transform duration-150 ease-out"
               loading="lazy"
             />
           ))}

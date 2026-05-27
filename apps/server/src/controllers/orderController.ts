@@ -10,10 +10,10 @@ export async function createOrder(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // Save order to the database
+    // Guardamos el pedido
     const newOrder = await prisma.order.create({
       data: {
-        id: orderId, // Use the ID generated during photo upload
+        id: orderId, // Usamos el ID que se generó al subir las fotos
         driveFolderId,
         customerName,
         email,
@@ -38,7 +38,8 @@ export async function createOrder(req: Request, res: Response): Promise<void> {
   }
 }
 
-import { uploadFileToDrive } from '../services/googleDrive.js';
+import fs from 'fs';
+import path from 'path';
 
 export async function uploadReceipt(req: Request, res: Response): Promise<void> {
   try {
@@ -50,41 +51,54 @@ export async function uploadReceipt(req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Verify order exists
     const order = await prisma.order.findUnique({ where: { id } });
     if (!order) {
       res.status(404).json({ error: 'Orden no encontrada' });
       return;
     }
 
-    // Upload receipt to Google Drive using the Order ID folder
-    const result = await uploadFileToDrive(
-      file.buffer,
-      `comprobante_${id}_${file.originalname}`,
-      file.mimetype,
-      id
-    );
+    const uploadDir = path.resolve(process.cwd(), 'uploads', `local_order_${id}`);
+    fs.mkdirSync(uploadDir, { recursive: true });
+    const localName = `comprobante_${Date.now()}_${file.originalname}`;
+    fs.writeFileSync(path.join(uploadDir, localName), file.buffer);
 
-    // Update order in DB
     const updatedOrder = await prisma.order.update({
       where: { id },
-      data: {
-        receiptFileId: result.fileId,
-        status: 'PAID'
-      }
+      data: { receiptFileId: localName, status: 'PAID' }
     });
 
-    res.json({
-      success: true,
-      order: updatedOrder
-    });
+    res.json({ success: true, order: updatedOrder });
   } catch (error) {
     console.error('Error uploading receipt:', error);
     res.status(500).json({ error: 'Error al subir el comprobante' });
   }
 }
 
-export async function getOrders(req: Request, res: Response): Promise<void> {
+export async function getReceiptImage(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id as string;
+    const order = await prisma.order.findUnique({ where: { id } });
+
+    if (!order?.receiptFileId) {
+      res.status(404).json({ error: 'Sin comprobante' });
+      return;
+    }
+
+    const filePath = path.resolve(process.cwd(), 'uploads', `local_order_${id}`, order.receiptFileId);
+
+    if (!fs.existsSync(filePath)) {
+      res.status(404).json({ error: 'Archivo no encontrado' });
+      return;
+    }
+
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error serving receipt:', error);
+    res.status(500).json({ error: 'Error al obtener el comprobante' });
+  }
+}
+
+export async function getOrders(_req: Request, res: Response): Promise<void> {
   try {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: 'desc' }
@@ -101,13 +115,54 @@ export async function updateOrderStatus(req: Request, res: Response): Promise<vo
     const id = req.params.id as string;
     const { status, rejectReason } = req.body;
 
+    const order = await prisma.order.findUnique({ where: { id } });
+    if (!order) {
+      res.status(404).json({ error: 'Orden no encontrada' });
+      return;
+    }
+
     const updatedOrder = await prisma.order.update({
       where: { id },
-      data: { 
+      data: {
         status,
-        ...(rejectReason && { rejectReason }) // Store rejection reason if provided
+        ...(rejectReason && { rejectReason }),
       }
     });
+
+    // Si aprueban el pedido, generamos el código y mandamos el correo
+    if (status === 'PROCESSING' && order.email) {
+      try {
+        const { sendApprovalEmail } = await import('../services/emailService.js');
+
+        // Generamos el código de impresión
+        const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+        const printCode = `BOFT-${suffix}`;
+        const sixMonths = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 * 6);
+
+        await (prisma as any).printCode.create({
+          data: {
+            code: printCode,
+            value: order.totalPrice,
+            isUsed: false,
+            expiresAt: sixMonths,
+          }
+        });
+
+        await sendApprovalEmail({
+          customerName: order.customerName,
+          customerEmail: order.email,
+          orderId: order.id,
+          printCode,
+          totalPrice: order.totalPrice,
+          photoCount: order.photoCount,
+        });
+
+        console.log(`[Email] Approval sent to ${order.email} with code ${printCode}`);
+      } catch (emailErr) {
+        // Si falla el correo no bloqueamos la aprobación, solo lo registramos
+        console.error('[Email] Failed to send approval email:', emailErr);
+      }
+    }
 
     res.json(updatedOrder);
   } catch (error) {

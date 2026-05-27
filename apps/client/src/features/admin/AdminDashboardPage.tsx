@@ -49,7 +49,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex min-h-screen overflow-hidden bg-background text-on-background font-body-md">
-      {/* Navigation Drawer (Admin Context) */}
+      {/* Barra lateral del admin */}
       <aside className="hidden md:flex flex-col h-full w-64 fixed left-0 bg-surface-container-lowest border-r border-surface-variant z-50">
         <div className="px-6 py-8">
           <span className="text-headline-md font-headline-md font-black text-primary-container">BOFT ADMIN</span>
@@ -59,10 +59,10 @@ export default function AdminDashboardPage() {
             <span className="material-symbols-outlined">receipt_long</span>
             <span className="font-body-md text-body-md">Orders</span>
           </a>
-          <a className="flex items-center gap-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-high py-4 px-6 transition-all duration-200" href="#">
-            <span className="material-symbols-outlined">group</span>
-            <span className="font-body-md text-body-md">Users</span>
-          </a>
+          <button onClick={() => navigate('/admin/codes')} className="flex items-center gap-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-high py-4 px-6 transition-all duration-200 w-full text-left">
+            <span className="material-symbols-outlined">qr_code</span>
+            <span className="font-body-md text-body-md">Códigos</span>
+          </button>
           <button
             onClick={() => navigate('/admin/settings')}
             className="flex items-center gap-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-high py-4 px-6 transition-all duration-200 w-full text-left"
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
         </nav>
       </aside>
 
-      {/* Main Content Canvas */}
+      {/* Contenido principal */}
       <main className={`flex-1 md:ml-64 flex flex-col h-screen overflow-hidden transition-all duration-500 ${selectedOrderId ? 'filter blur-sm opacity-50 pointer-events-none' : ''}`}>
         <header className="flex justify-between items-center w-full px-6 md:px-margin-mobile h-16 z-50 sticky top-0 bg-background shadow-[0_4px_20px_rgba(207,241,0,0.1)]">
           <div className="flex items-center gap-4">
@@ -207,7 +207,7 @@ export default function AdminDashboardPage() {
         </section>
       </main>
 
-      {/* Mobile Footer Navigation */}
+      {/* Navegación móvil inferior */}
       <footer className="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container shadow-[0_-4px_20px_rgba(0,0,0,0.5)] rounded-t-lg">
         <a className="flex flex-col items-center justify-center text-primary-container bg-surface-variant/50 rounded-xl px-4 py-1 scale-90 transition-transform" href="#">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>

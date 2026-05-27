@@ -5,7 +5,7 @@ export default function PaymentStatusPage() {
   const orderId = location.state?.orderId || 'BF-88219';
 
   return (
-    <div className="flex-grow flex flex-col items-center justify-center py-12 md:py-20 px-4 md:px-6 min-h-[80vh]">
+    <div className="grow flex flex-col items-center justify-center py-12 md:py-20 px-4 md:px-6 min-h-[80vh]">
       <style>{`
         .pending-pulse {
             box-shadow: 0 0 0 0 rgba(207, 241, 0, 0.4);
@@ -18,8 +18,8 @@ export default function PaymentStatusPage() {
         }
       `}</style>
 
-      <div className="max-w-[800px] w-full text-center space-y-10">
-        {/* Waiting Indicator */}
+      <div className="max-w-200 w-full text-center space-y-10">
+        {/* Indicador de espera */}
         <div className="relative inline-flex items-center justify-center">
           <div className="absolute w-24 h-24 bg-primary-fixed/10 rounded-full pending-pulse"></div>
           <div className="relative bg-surface-container-high w-16 h-16 rounded-full flex items-center justify-center border-2 border-primary-fixed shadow-lg shadow-primary-fixed/20">
@@ -29,7 +29,7 @@ export default function PaymentStatusPage() {
           </div>
         </div>
 
-        {/* Titles */}
+        {/* Títulos */}
         <div className="space-y-4">
           <h1 className="font-headline text-3xl md:text-4xl font-bold text-on-surface">Estamos validando tu pago</h1>
           <p className="font-body text-lg md:text-xl text-on-surface-variant max-w-lg mx-auto leading-relaxed">
@@ -37,9 +37,9 @@ export default function PaymentStatusPage() {
           </p>
         </div>
 
-        {/* Status Card */}
+        {/* Tarjeta de estado */}
         <div className="bg-surface-container rounded-2xl border border-outline-variant/30 p-8 md:p-12 shadow-2xl relative overflow-hidden text-left">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed to-tertiary-fixed-dim"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-primary-fixed to-tertiary-fixed-dim"></div>
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 border-b border-outline-variant/20 pb-8">
             <div>
@@ -64,7 +64,7 @@ export default function PaymentStatusPage() {
             </div>
             
             <div className="flex flex-col gap-4">
-              <Link to="/" className="w-full bg-primary-fixed text-on-primary-fixed h-14 rounded-full font-label text-sm font-bold flex items-center justify-center hover:scale-[1.02] transition-transform active:scale-95 shadow-lg shadow-primary-fixed/20 tracking-wider">
+              <Link to="/" className="w-full bg-primary-fixed text-on-primary-fixed h-14 rounded-full font-label text-sm font-bold flex items-center justify-center hover:scale-[1.02] active:scale-[0.97] transition-transform duration-150 ease-out shadow-lg shadow-primary-fixed/20 tracking-wider">
                 VOLVER AL INICIO
               </Link>
               <div className="flex items-center justify-center gap-2 text-on-surface-variant py-2">
@@ -75,7 +75,7 @@ export default function PaymentStatusPage() {
           </div>
         </div>
 
-        {/* Visual Decoration / Image */}
+        {/* Decoración visual */}
         <div className="mt-12 opacity-40">
           <div className="flex justify-center gap-4 grayscale">
             <div className="w-24 h-32 bg-surface-container-highest border-8 border-surface p-2 shadow-xl -rotate-6 rounded-sm">

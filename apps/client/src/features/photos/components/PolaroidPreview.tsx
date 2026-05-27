@@ -38,7 +38,7 @@ export default function PolaroidPreview({ photos, formatId = 'standard' }: Polar
     const photo = previewPhotos[index];
     const currentRotation = photo ? (rotations[photo.id] || 0) : 0;
     const isRotated90 = currentRotation % 180 !== 0;
-    // For mini (2x2 grid in 4:3), each slot is 4:3 or 3:4. Scale helps cover.
+    // En el mini (grilla 2x2 en formato 4:3) el escalado compensa la rotación para que la foto cubra bien el espacio
     const scale = isRotated90 ? 1.5 : 1;
 
     return (
@@ -78,7 +78,7 @@ export default function PolaroidPreview({ photos, formatId = 'standard' }: Polar
         </h3>
       </div>
 
-      <div className="relative bg-white p-2.5 md:p-3 shadow-xl rotate-1 group hover:rotate-0 transition-all duration-500 mx-auto w-full aspect-[4/3] max-w-[340px] overflow-hidden">
+      <div className="relative bg-white p-2.5 md:p-3 shadow-xl rotate-1 group hover:rotate-0 transition-all duration-500 mx-auto w-full aspect-4/3 max-w-85 overflow-hidden">
         
         <div className="flex flex-col h-full min-h-0">
           {isMini ? (
@@ -105,8 +105,8 @@ export default function PolaroidPreview({ photos, formatId = 'standard' }: Polar
           </div>
         </div>
 
-        {/* Glossy sheen effect */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/15 pointer-events-none" />
+        {/* Brillo superficial */}
+        <div className="absolute inset-0 bg-linear-to-tr from-white/0 via-white/5 to-white/15 pointer-events-none" />
       </div>
 
       {!hasPhotos ? (

@@ -4,7 +4,8 @@ import { LandingPage } from '@/features/landing';
 import { UploadPage } from '@/features/photos';
 import { CheckoutPage } from '@/features/checkout';
 import { NequiPaymentPage, PaymentStatusPage } from '@/features/payments';
-import { AdminDashboardPage, AdminLoginPage, AdminSettingsPage } from '@/features/admin';
+import { AdminDashboardPage, AdminLoginPage, AdminSettingsPage, AdminCodesPage } from '@/features/admin';
+import { SupportChatPage } from '@/features/support';
 
 export default function AppRouter() {
   return (
@@ -22,7 +23,11 @@ export default function AppRouter() {
         {/* Admin Routes without RootLayout */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminDashboardPage />} />
+        <Route path="/admin/codes" element={<AdminCodesPage />} />
         <Route path="/admin/settings" element={<AdminSettingsPage />} />
+        
+        {/* Independent Support Route */}
+        <Route path="/support" element={<SupportChatPage />} />
       </Routes>
     </BrowserRouter>
   );

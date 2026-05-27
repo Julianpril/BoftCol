@@ -7,17 +7,18 @@ export default function NequiPaymentPage() {
   const location = useLocation();
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [nequiData, setNequiData] = useState({ number: '312 5871 829', name: 'BOFT COLOMBIA SAS', qrUrl: '' });
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [nequiData, setNequiData] = useState({ number: '@dllah313', name: 'Ledy Dayana Abril Herrera', qrUrl: '' });
 
-  // Recuperamos la orden y total (ejemplo fallback si entran directo)
+  // Recuperar la orden y total (ejemplo fallback si entran directo)
   const orderId = location.state?.orderId || 'BT-000000';
   const grandTotal = location.state?.grandTotal || 0;
 
   useEffect(() => {
     fetchSettings().then(settings => {
       setNequiData({
-        number: settings.nequiNumber || '312 5871 829',
-        name: settings.nequiName || 'BOFT COLOMBIA SAS',
+        number: settings.nequiNumber || '@dllah313',
+        name: settings.nequiName || 'Ledy Dayana Abril Herrera',
         qrUrl: settings.nequiQrUrl || '',
       });
     }).catch(console.error);
@@ -47,13 +48,13 @@ export default function NequiPaymentPage() {
       navigate('/payment/status', { state: { orderId } });
     } catch (error) {
       console.error(error);
-      alert('Error al subir el comprobante. Inténtalo de nuevo.');
+      setErrorMsg('No pudimos subir tu comprobante. Verifica tu conexión e inténtalo de nuevo.');
       setIsUploading(false);
     }
   };
 
   return (
-    <div className="py-12 md:py-20 px-4 md:px-6 max-w-[1200px] mx-auto min-h-screen">
+    <div className="py-12 md:py-20 px-4 md:px-6 max-w-300 mx-auto min-h-screen">
       <div className="flex flex-col items-center">
         {/* Breadcrumbs or Back Link */}
         <div className="w-full max-w-2xl mb-12">
@@ -67,19 +68,19 @@ export default function NequiPaymentPage() {
         <div className="w-full max-w-3xl bg-surface-container-low p-6 md:p-12 rounded-[2rem] border border-outline-variant/20 shadow-xl">
           {/* Heading */}
           <div className="text-center mb-10">
-            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-2">Pago con Nequi</h1>
+            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-2">Pago con Bancolombia</h1>
             <p className="text-on-surface-variant font-body text-base md:text-lg">Completa tu transferencia para imprimir tus momentos.</p>
           </div>
 
-          {/* Nequi Number Highlight */}
-          <div className="bg-surface-container-highest p-6 md:p-8 rounded-2xl border border-primary-fixed/20 flex flex-col items-center justify-center mb-10 group hover:border-primary-fixed transition-all duration-300">
-            <span className="font-label text-xs font-semibold text-primary-fixed mb-2 tracking-widest uppercase">Número de Cuenta Nequi</span>
+          {/* Bancolombia Key Highlight */}
+          <div className="bg-surface-container-highest p-6 md:p-8 rounded-2xl border border-primary-fixed/20 flex flex-col items-center justify-center mb-10 group hover:border-primary-fixed transition-[border-color] duration-200 ease-out">
+            <span className="font-label text-xs font-semibold text-primary-fixed mb-2 tracking-widest uppercase">Llave Bancolombia</span>
             <div className="flex items-center gap-4">
-              <span className="font-display text-4xl md:text-[64px] font-black text-primary-fixed select-all tracking-tighter">{nequiData.number}</span>
-              <button 
-                onClick={() => navigator.clipboard.writeText(nequiData.number.replace(/\s+/g, ''))}
-                className="p-2 hover:bg-primary-fixed/10 rounded-full text-on-surface-variant hover:text-primary-fixed transition-colors"
-                title="Copiar número"
+              <span className="font-display text-4xl md:text-[56px] font-black text-primary-fixed select-all tracking-tighter">{nequiData.number}</span>
+              <button
+                onClick={() => navigator.clipboard.writeText(nequiData.number)}
+                className="p-2 hover:bg-primary-fixed/10 rounded-full text-on-surface-variant hover:text-primary-fixed transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.9]"
+                title="Copiar llave"
               >
                 <span className="material-symbols-outlined">content_copy</span>
               </button>
@@ -90,19 +91,19 @@ export default function NequiPaymentPage() {
             )}
           </div>
 
-          {/* QR de cobro Nequi */}
+          {/* QR Bancolombia */}
           {nequiData.qrUrl && (
             <div className="bg-surface-container-highest p-6 md:p-8 rounded-2xl border border-primary-fixed/20 flex flex-col items-center gap-4 mb-10">
               <span className="font-label text-xs font-semibold text-primary-fixed tracking-widest uppercase">
-                Escanea con tu app Nequi
+                Escanea con tu app Bancolombia
               </span>
               <img
                 src={nequiData.qrUrl}
-                alt="QR de cobro Nequi — escanea para pagar"
+                alt="QR Bancolombia — escanea para pagar"
                 className="w-48 h-48 object-contain rounded-xl bg-white p-2"
               />
               <p className="text-on-surface-variant text-sm text-center font-body">
-                Abre Nequi → Pagar → Escanear QR
+                Abre Bancolombia → Transferir → Escanear QR
               </p>
             </div>
           )}
@@ -113,8 +114,9 @@ export default function NequiPaymentPage() {
             <div>
               <p className="font-label text-sm font-semibold text-on-surface mb-2 tracking-wide">Pasos para el pago:</p>
               <ul className="text-on-surface-variant font-body text-sm md:text-base space-y-1 list-disc list-inside">
-                <li>Abre Nequi y selecciona "Enviar plata".</li>
-                <li>Ingresa el número superior y el valor total de tu pedido.</li>
+                <li>Abre Bancolombia y selecciona "Transferir".</li>
+                <li>Elige "A otro banco o Bancolombia" → "Por llave".</li>
+                <li>Ingresa la llave <strong>{nequiData.number}</strong> y el valor total.</li>
                 <li>Toma una captura de pantalla del comprobante exitoso.</li>
                 <li>Cárgalo a continuación para validar tu pedido.</li>
               </ul>
@@ -124,9 +126,9 @@ export default function NequiPaymentPage() {
           {/* Upload Area */}
           <div className="mb-10">
             <label className="block font-label text-sm font-semibold text-on-surface mb-4 tracking-wide">Comprobante de Pago</label>
-            <label className="border-2 border-dashed border-primary-fixed/50 rounded-2xl p-8 md:p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-primary-fixed/5 transition-all duration-300 group">
+            <label className="border-2 border-dashed border-primary-fixed/50 rounded-2xl p-8 md:p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-primary-fixed/5 transition-[background-color,border-color] duration-200 ease-out group">
               <input type="file" className="hidden" accept="image/jpeg, image/png, application/pdf" onChange={handleFileChange} />
-              <div className="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 group-hover:scale-[1.08] transition-transform duration-200 ease-out">
                 <span className="material-symbols-outlined text-primary-fixed text-4xl">cloud_upload</span>
               </div>
               <p className="font-headline text-xl md:text-2xl font-bold text-on-surface mb-1">
@@ -157,13 +159,22 @@ export default function NequiPaymentPage() {
             </div>
           </div>
 
+          {/* Error Toast */}
+          {errorMsg && (
+            <div className="mb-6 flex items-start gap-3 bg-error/10 border border-error/30 text-error rounded-2xl px-5 py-4">
+              <span className="material-symbols-outlined mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
+              <div className="flex-1 text-sm font-body">{errorMsg}</div>
+              <button onClick={() => setErrorMsg(null)} className="material-symbols-outlined text-error/60 hover:text-error text-base shrink-0">close</button>
+            </div>
+          )}
+
           {/* Action Button */}
           <button 
             onClick={handleConfirm}
             disabled={!file || isUploading}
-            className={`w-full font-bold py-5 rounded-full text-lg flex items-center justify-center gap-3 transition-all duration-300 
+            className={`w-full font-bold py-5 rounded-full text-lg flex items-center justify-center gap-3 transition-[transform,box-shadow] duration-150 ease-out
               ${file && !isUploading
-                ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary-fixed/20' 
+                ? 'bg-primary-fixed text-on-primary-fixed hover:scale-[1.02] active:scale-[0.97] shadow-lg shadow-primary-fixed/20 cursor-pointer'
                 : 'bg-surface-container-highest text-on-surface-variant/40 cursor-not-allowed'}`}
           >
             {isUploading ? (

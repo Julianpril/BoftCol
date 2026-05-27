@@ -45,20 +45,20 @@ async function main() {
   }
   console.log('Pricing tiers seeded successfully.');
 
-  // Seed settings
+  // Configuración inicial
+  const settingsData = {
+    shippingCost: 2900,
+    nequiNumber: '@dllah313',
+    nequiName: 'Ledy Dayana Abril Herrera'
+  };
   await prisma.settings.upsert({
     where: { id: 'global' },
-    update: {},
-    create: {
-      id: 'global',
-      shippingCost: 2900,
-      nequiNumber: '312 5871 829',
-      nequiName: 'BOFT COLOMBIA SAS'
-    }
+    update: settingsData,
+    create: { id: 'global', ...settingsData }
   });
   console.log('Settings seeded.');
 
-  // Seed admin from .env
+  // Admin: tomamos las credenciales del .env
   const adminEmail = process.env.ADMIN_EMAIL;
   const adminPassword = process.env.ADMIN_PASSWORD;
   if (adminEmail && adminPassword) {
@@ -72,6 +72,26 @@ async function main() {
   } else {
     console.warn('ADMIN_EMAIL or ADMIN_PASSWORD not set — skipping admin seed');
   }
+
+  // Códigos de prueba para testing
+  const sixMonthsFromNow = new Date();
+  sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+
+  const sampleCodes = [
+    { code: 'ABCD-6K-1', value: 6000, isUsed: false, expiresAt: sixMonthsFromNow },
+    { code: 'ABCD-6K-2', value: 6000, isUsed: false, expiresAt: sixMonthsFromNow },
+    { code: 'ABCD-12K-1', value: 12000, isUsed: false, expiresAt: sixMonthsFromNow },
+    { code: 'ABCD-15K-1', value: 15000, isUsed: false, expiresAt: sixMonthsFromNow }
+  ];
+
+  for (const c of sampleCodes) {
+    await (prisma as any).printCode.upsert({
+      where: { code: c.code },
+      update: {},
+      create: c,
+    });
+  }
+  console.log('Sample PrintCodes seeded for testing.');
 }
 
 main()

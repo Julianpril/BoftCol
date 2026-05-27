@@ -1,8 +1,6 @@
 const API_BASE = '/api';
 
-/**
- * Generic fetch wrapper with error handling.
- */
+/** Wrapper de fetch con manejo de errores centralizado. */
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -17,7 +15,7 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
-// ─── Types (mirrored from server) ───
+// ─── Tipos (espejo del servidor) ───
 
 export interface PhotoFormat {
   id: string;
@@ -44,7 +42,7 @@ export interface UploadedPhoto {
   uploadedAt: string;
 }
 
-// ─── API Methods ───
+// ─── Métodos de la API ───
 
 export async function fetchFormats(): Promise<PhotoFormat[]> {
   const data = await apiFetch<{ formats: PhotoFormat[] }>('/photos/formats');

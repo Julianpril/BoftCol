@@ -18,7 +18,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Bloqueamos el scroll del body mientras el menú está abierto
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -27,13 +27,13 @@ export default function Navbar() {
   return (
     <header
       id="navbar"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,box-shadow,border-color] duration-300 ease-out
         ${scrolled
           ? 'bg-surface/95 backdrop-blur-xl shadow-lg shadow-primary-fixed/5 border-b border-outline-variant/20'
           : 'bg-transparent'
         }`}
     >
-      <div className="flex justify-between items-center w-full px-4 md:px-6 max-w-[1200px] mx-auto h-20">
+      <div className="flex justify-between items-center w-full px-4 md:px-6 max-w-300 mx-auto h-20">
         {/* Logo */}
         <a
           href="/"
@@ -42,40 +42,40 @@ export default function Navbar() {
           BOFT COLOMBIA
         </a>
 
-        {/* Desktop Nav */}
+        {/* Navegación escritorio */}
         <nav className="hidden md:flex items-center gap-6" aria-label="Navegación principal">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               className="relative font-label text-sm font-semibold tracking-wider uppercase text-on-surface-variant hover:text-on-surface transition-colors duration-200
-                after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary-fixed after:transition-all after:duration-300 hover:after:w-full"
+                after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-primary-fixed after:transition-all after:duration-300 hover:after:w-full"
             >
               {link.label}
             </a>
           ))}
         </nav>
 
-        {/* Desktop CTA */}
+        {/* Botón de acción escritorio */}
         <button
           onClick={() => navigate('/admin/login')}
           className="hidden md:block bg-primary-fixed text-on-primary-fixed px-7 py-2.5 rounded-full font-label text-sm font-semibold tracking-wider uppercase
-            hover:scale-[0.97] active:scale-95 transition-all duration-150 shadow-md shadow-primary-fixed/20 cursor-pointer"
+            hover:scale-[0.97] active:scale-[0.95] transition-transform duration-150 ease-out shadow-md shadow-primary-fixed/20 cursor-pointer"
         >
           Login
         </button>
 
-        {/* Mobile hamburger */}
+        {/* Hamburguesa móvil */}
         <button
           id="mobile-menu-toggle"
-          className="md:hidden flex flex-col gap-[5px] p-2 cursor-pointer"
+          className="md:hidden flex flex-col gap-1.25 p-2 cursor-pointer"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
           aria-expanded={mobileOpen}
         >
           <span
             className={`block w-6 h-0.5 bg-on-surface transition-all duration-300
-              ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`}
+              ${mobileOpen ? 'rotate-45 translate-y-1.75' : ''}`}
           />
           <span
             className={`block w-6 h-0.5 bg-on-surface transition-all duration-300
@@ -83,17 +83,17 @@ export default function Navbar() {
           />
           <span
             className={`block w-6 h-0.5 bg-on-surface transition-all duration-300
-              ${mobileOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}
+              ${mobileOpen ? '-rotate-45 -translate-y-1.75' : ''}`}
           />
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Menú móvil desplegable */}
       <div
-        className={`md:hidden fixed inset-0 top-20 bg-surface/98 backdrop-blur-2xl transition-all duration-400
+        className={`md:hidden fixed inset-0 top-20 bg-surface/98 backdrop-blur-2xl transition-[opacity,transform] duration-300 ease-out
           ${mobileOpen
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none'
+            ? 'opacity-100 pointer-events-auto translate-y-0'
+            : 'opacity-0 pointer-events-none -translate-y-2'
           }`}
       >
         <nav className="flex flex-col items-center justify-center gap-8 pt-16" aria-label="Menú móvil">
@@ -102,8 +102,9 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="font-headline text-2xl font-bold text-on-surface hover:text-primary-fixed transition-colors"
-              style={{ animationDelay: `${i * 80}ms` }}
+              className={`font-headline text-2xl font-bold text-on-surface hover:text-primary-fixed transition-colors duration-150
+                ${mobileOpen ? 'animate-slide-up' : ''}`}
+              style={{ animationDelay: `${i * 60}ms` }}
             >
               {link.label}
             </a>
@@ -114,7 +115,7 @@ export default function Navbar() {
               navigate('/admin/login');
             }}
             className="mt-4 bg-primary-fixed text-on-primary-fixed px-10 py-4 rounded-full font-label text-base font-semibold tracking-wider uppercase
-              hover:scale-[0.97] active:scale-95 transition-all cursor-pointer"
+              hover:scale-[0.97] active:scale-[0.95] transition-transform duration-150 ease-out cursor-pointer"
           >
             Login
           </button>
