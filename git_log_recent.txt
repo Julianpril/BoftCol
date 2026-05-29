@@ -1,0 +1,33 @@
+﻿COMMIT:ec5ff49b44989577cd451bc8ea729db8b4a7f5b2|AUTHOR:kjmaya|DATE:Sat May 30 15:46:27 2026 -0500|MSG:feat: add AdminSupportPage with inbox, takeover controls, routing and sidebar nav
+M	apps/client/src/features/admin/AdminCodesPage.tsx
+M	apps/client/src/features/admin/AdminDashboardPage.tsx
+A	apps/client/src/features/admin/AdminSupportPage.tsx
+M	apps/client/src/router/AppRouter.tsx
+
+COMMIT:e06b9dbac21cd564ef2fd200043f683ae86304a0|AUTHOR:kjmaya|DATE:Sat May 30 15:46:18 2026 -0500|MSG:feat: add human takeover polling and agent banner to SupportChatPage
+M	apps/client/src/features/support/SupportChatPage.tsx
+
+COMMIT:d354419729518ff76a8efc9328444e6a6f769d81|AUTHOR:kjmaya|DATE:Sat May 30 15:46:10 2026 -0500|MSG:feat: add admin support endpoints and human takeover bypass in sendMessage
+M	apps/server/src/controllers/supportController.ts
+M	apps/server/src/routes/supportRoutes.ts
+
+COMMIT:5f0f295f47f41a53a59af3b82af5c2b972537b6d|AUTHOR:kjmaya|DATE:Sat May 30 15:37:42 2026 -0500|MSG:feat: add isHumanTakeover, clientName, sentByAdmin fields to support models
+A	apps/server/prisma/migrations/20260530153552_add_human_takeover/migration.sql
+M	apps/server/prisma/schema.prisma
+
+COMMIT:c1d3861a9f3eb7d0897fd5a073c80d9b41467ea7|AUTHOR:kjmaya|DATE:Mon May 25 09:45:00 2026 -0500|MSG:arreglos Chat soporte y configuracion api Open IA
+M	apps/client/src/features/admin/AdminDashboardPage.tsx
+M	apps/client/src/features/admin/components/OrderDetailsDrawer.tsx
+M	apps/client/src/features/checkout/CheckoutPage.tsx
+M	apps/client/src/features/landing/LandingPage.tsx
+M	apps/client/src/features/landing/components/CtaSection.tsx
+M	apps/client/src/features/landing/components/HeroSection.tsx
+M	apps/client/src/features/landing/components/TrustSection.tsx
+A	apps/client/src/features/landing/components/UbicacionesSection.tsx
+M	apps/client/src/features/landing/components/ValuePropsSection.tsx
+M	apps/client/src/features/landing/components/index.ts
+M	apps/client/src/features/photos/components/UploadZone.tsx
+M	apps/client/src/features/support/SupportChatPage.tsx
+M	apps/server/src/controllers/supportController.ts
+A	git_log.txt
+A	git_log_utf8.txt
