@@ -73,21 +73,24 @@ model PriceTier {
 }
 
 model SupportSession {
-  id        String           @id @default(uuid())
-  messages  SupportMessage[]
-  receipts  Receipt[]
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id               String           @id @default(uuid())
+  isHumanTakeover  Boolean          @default(false)
+  clientName       String?
+  messages         SupportMessage[]
+  receipts         Receipt[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 }
 
 model SupportMessage {
   id               String         @id @default(uuid())
   sessionId        String
   session          SupportSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  role             Role           // 'user' or 'assistant'
+  role             Role
   content          String
   requiresReceipt  Boolean        @default(false)
   printCode        String?
+  sentByAdmin      Boolean        @default(false)
   createdAt        DateTime       @default(now())
 }
 
