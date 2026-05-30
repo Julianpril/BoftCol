@@ -89,31 +89,49 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // 1. Guardamos el mensaje del usuario
-    await prisma.supportMessage.create({
-      data: {
-        sessionId: sessionId as string,
-        role: 'user',
-        content: content as string
+    const session = await prisma.supportSession.findUnique({ where: { id: sessionId } });
+    if (!session) {
+      res.status(404).json({ error: 'Session not found' });
+      return;
+    }
+
+    // Capture clientName from the very first user message (≤30 chars heuristic)
+    if (!session.clientName && content.length <= 30) {
+      const existingUserCount = await prisma.supportMessage.count({
+        where: { sessionId, role: 'user' },
+      });
+      if (existingUserCount === 0) {
+        await prisma.supportSession.update({
+          where: { id: sessionId },
+          data: { clientName: content.trim() },
+        });
       }
+    }
+
+    // Save the user message
+    const userMessage = await prisma.supportMessage.create({
+      data: { sessionId, role: 'user', content },
     });
 
-    // 2. Traemos el historial para enviárselo a OpenAI
+    // If admin is in control, skip OpenAI and let admin reply
+    if (session.isHumanTakeover) {
+      res.json({ pendingAdminReply: true, isSessionClosed: false, lastMessageId: userMessage.id });
+      return;
+    }
+
+    // Fetch full history for OpenAI
     const history = await prisma.supportMessage.findMany({
       where: { sessionId },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
 
     const systemPrompt = await buildSystemPrompt();
     const messages = [
       { role: 'system', content: systemPrompt },
-      ...history.map(m => ({
-        role: m.role,
-        content: m.content
-      }))
+      ...history.map(m => ({ role: m.role, content: m.content })),
     ];
 
-    // 3. Llamamos a OpenAI
+    // Call OpenAI
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: messages as any,
@@ -157,10 +175,9 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
     let printCode: string | undefined = undefined;
     let isSessionClosed = false;
 
-    // Revisamos si la IA llamó a alguna herramienta
     if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
       for (const t of aiMessage.tool_calls) {
-        const toolCall = t as any; // Cast to bypass TS property access error
+        const toolCall = t as any;
         if (toolCall.function.name === 'close_session') {
           isSessionClosed = true;
           if (!responseText) {
@@ -174,21 +191,15 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
         } else if (toolCall.function.name === 'assign_print_code') {
           const args = JSON.parse(toolCall.function.arguments);
           const paymentAmount = args.amount;
-          
-          // Buscar en la DB un código que coincida con el valor, no usado y no vencido
+
           const availableCode = await (prisma as any).printCode.findFirst({
-            where: {
-              value: paymentAmount,
-              isUsed: false,
-              expiresAt: { gt: new Date() }
-            }
+            where: { value: paymentAmount, isUsed: false, expiresAt: { gt: new Date() } },
           });
 
           if (availableCode) {
-            // Marcar como usado
             await (prisma as any).printCode.update({
               where: { id: availableCode.id },
-              data: { isUsed: true }
+              data: { isUsed: true },
             });
             printCode = availableCode.code;
             if (!responseText) {
@@ -205,22 +216,152 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
 
     if (!responseText) responseText = "Entendido. ¿En qué más te puedo ayudar?";
 
-    // 4. Guardamos la respuesta de la IA
     const savedAiMessage = await prisma.supportMessage.create({
-      data: {
-        sessionId: sessionId as string,
-        role: 'assistant',
-        content: responseText,
-        requiresReceipt,
-        printCode
-      } as any // Bypass TS error before prisma generate is run
+      data: { sessionId, role: 'assistant', content: responseText, requiresReceipt, printCode } as any,
     });
 
     res.json({ ...savedAiMessage, isSessionClosed });
-
   } catch (error) {
     console.error('Error sending message:', error);
     res.status(500).json({ error: 'Error processing message' });
+  }
+}
+
+// ─── Admin Support Takeover ───
+
+export async function listSessions(_req: Request, res: Response): Promise<void> {
+  try {
+    const sessions = await prisma.supportSession.findMany({
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        messages: { orderBy: { createdAt: 'desc' }, take: 1 },
+      },
+    });
+
+    const result = await Promise.all(
+      sessions.map(async (s) => {
+        const lastAdminMsg = await prisma.supportMessage.findFirst({
+          where: { sessionId: s.id, sentByAdmin: true },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        const unreadCount = await prisma.supportMessage.count({
+          where: {
+            sessionId: s.id,
+            role: 'user',
+            ...(lastAdminMsg ? { createdAt: { gt: lastAdminMsg.createdAt } } : {}),
+          },
+        });
+
+        return {
+          id: s.id,
+          clientName: s.clientName,
+          isHumanTakeover: s.isHumanTakeover,
+          createdAt: s.createdAt,
+          updatedAt: s.updatedAt,
+          lastMessage: s.messages[0] || null,
+          unreadCount,
+        };
+      })
+    );
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error listing sessions:', error);
+    res.status(500).json({ error: 'Error listing sessions' });
+  }
+}
+
+export async function takeoverSession(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id as string;
+    const session = await prisma.supportSession.update({
+      where: { id },
+      data: { isHumanTakeover: true },
+    });
+    res.json(session);
+  } catch (error) {
+    console.error('Error taking over session:', error);
+    res.status(500).json({ error: 'Error taking over session' });
+  }
+}
+
+export async function releaseSession(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id as string;
+    const session = await prisma.supportSession.update({
+      where: { id },
+      data: { isHumanTakeover: false },
+    });
+    res.json(session);
+  } catch (error) {
+    console.error('Error releasing session:', error);
+    res.status(500).json({ error: 'Error releasing session' });
+  }
+}
+
+export async function adminSendMessage(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id as string;
+    const { content } = req.body;
+
+    if (!content) {
+      res.status(400).json({ error: 'Missing content' });
+      return;
+    }
+
+    const message = await prisma.supportMessage.create({
+      data: {
+        sessionId: id,
+        role: 'assistant',
+        content,
+        sentByAdmin: true,
+      } as any,
+    });
+
+    await prisma.supportSession.update({
+      where: { id },
+      data: { updatedAt: new Date() },
+    });
+
+    res.json(message);
+  } catch (error) {
+    console.error('Error sending admin message:', error);
+    res.status(500).json({ error: 'Error sending admin message' });
+  }
+}
+
+export async function pollMessages(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id as string;
+    const afterId = req.query.afterId as string | undefined;
+
+    const session = await prisma.supportSession.findUnique({ where: { id } });
+    if (!session) {
+      res.status(404).json({ error: 'Session not found' });
+      return;
+    }
+
+    let messages;
+    if (afterId) {
+      const anchor = await prisma.supportMessage.findUnique({ where: { id: afterId } });
+      messages = anchor
+        ? await prisma.supportMessage.findMany({
+            where: { sessionId: id, createdAt: { gt: anchor.createdAt } },
+            orderBy: { createdAt: 'asc' },
+          })
+        : [];
+    } else {
+      messages = await prisma.supportMessage.findMany({
+        where: { sessionId: id },
+        orderBy: { createdAt: 'asc' },
+      });
+    }
+
+    res.json({ messages, isHumanTakeover: session.isHumanTakeover });
+  } catch (error) {
+    console.error('Error polling messages:', error);
+    res.status(500).json({ error: 'Error polling messages' });
   }
 }
 
