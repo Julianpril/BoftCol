@@ -8,6 +8,7 @@ interface Message {
   requiresReceipt: boolean;
   printCode?: string;
   createdAt: string;
+  sentByAdmin?: boolean;
 }
 
 export default function SupportChatPage() {
@@ -22,6 +23,15 @@ export default function SupportChatPage() {
   });
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isHumanTakeover, setIsHumanTakeover] = useState(false);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  };
 
   // Arrancamos la sesión o cargamos el historial si ya existe
   useEffect(() => {
@@ -57,6 +67,10 @@ export default function SupportChatPage() {
     }
   }, [messages, isLoading]);
 
+  useEffect(() => {
+    return () => stopPolling();
+  }, []);
+
   const handleSendMessage = async (customMessage?: string) => {
     const textToSend = typeof customMessage === 'string' ? customMessage : inputValue;
     if (!textToSend.trim() || !sessionId || isLoading) return;
@@ -66,7 +80,7 @@ export default function SupportChatPage() {
       role: 'user',
       content: textToSend,
       requiresReceipt: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     setMessages(prev => [...prev, newMsg]);
@@ -77,9 +91,30 @@ export default function SupportChatPage() {
       const res = await fetch('/api/support/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, content: textToSend })
+        body: JSON.stringify({ sessionId, content: textToSend }),
       });
       const data = await res.json();
+
+      if (data.pendingAdminReply) {
+        setIsHumanTakeover(true);
+        const afterId = data.lastMessageId;
+        pollingRef.current = setInterval(async () => {
+          try {
+            const pollRes = await fetch(`/api/support/${sessionId}/poll?afterId=${afterId}`);
+            const pollData = await pollRes.json();
+            setIsHumanTakeover(pollData.isHumanTakeover);
+            if (pollData.messages.length > 0) {
+              stopPolling();
+              setIsLoading(false);
+              setMessages(prev => [...prev, ...pollData.messages]);
+            }
+          } catch (err) {
+            console.error('Poll error:', err);
+          }
+        }, 3000);
+        return;
+      }
+
       setMessages(prev => [...prev, data]);
       if (data.isSessionClosed) {
         setIsSessionClosed(true);
@@ -88,7 +123,7 @@ export default function SupportChatPage() {
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
-      setIsLoading(false);
+      if (!pollingRef.current) setIsLoading(false);
     }
   };
 
@@ -143,6 +178,13 @@ export default function SupportChatPage() {
           BOFT Colombia
         </Link>
       </header>
+
+      {isHumanTakeover && (
+        <div className="fixed top-16 left-0 right-0 z-40 flex items-center justify-center gap-2 bg-primary-fixed/10 border-b border-primary-fixed/20 py-2 px-4">
+          <span className="material-symbols-outlined text-primary-fixed text-base" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
+          <span className="text-primary-fixed text-xs font-semibold">Ahora te atiende un agente de BOFT</span>
+        </div>
+      )}
 
       {/* Barra lateral */}
       <aside className="hidden md:flex flex-col h-screen fixed left-0 top-0 pt-20 bg-surface-container-low border-r border-outline-variant w-72 z-40 shadow-xl">
@@ -247,10 +289,10 @@ export default function SupportChatPage() {
           {messages.map((msg) => (
             <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start gap-3 md:gap-4'}`}>
               
-              {/* Avatar de la IA */}
+              {/* Avatar de la IA o agente */}
               {msg.role === 'assistant' && (
                 <div className="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center shrink-0 mt-1">
-                  <span className="material-symbols-outlined text-[18px] text-on-primary-fixed">auto_awesome</span>
+                  <span className="material-symbols-outlined text-[18px] text-on-primary-fixed">{msg.sentByAdmin ? 'person' : 'auto_awesome'}</span>
                 </div>
               )}
 
@@ -265,6 +307,11 @@ export default function SupportChatPage() {
                   <p className="text-sm md:text-base leading-relaxed text-on-surface whitespace-pre-wrap">{msg.content}</p>
                 </div>
                 
+                {msg.role === 'assistant' && (
+                  <span className="text-[10px] text-on-surface-variant opacity-70 px-1 font-semibold">
+                    {msg.sentByAdmin ? 'Agente BOFT' : 'Asistente BOFT'}
+                  </span>
+                )}
                 <span className="text-[10px] text-on-surface-variant opacity-70 px-1">
                   {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
