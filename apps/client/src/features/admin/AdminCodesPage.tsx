@@ -156,6 +156,10 @@ export default function AdminCodesPage() {
             <span className="material-symbols-outlined">qr_code</span>
             <span className="font-body-md text-body-md">Códigos</span>
           </a>
+          <button onClick={() => navigate('/admin/support')} className="flex items-center gap-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-high py-4 px-6 transition-all duration-200 w-full text-left">
+            <span className="material-symbols-outlined">support_agent</span>
+            <span className="font-body-md text-body-md">Soporte</span>
+          </button>
           <button onClick={() => navigate('/admin/settings')} className="flex items-center gap-4 text-on-surface-variant hover:text-primary hover:bg-surface-container-high py-4 px-6 transition-all duration-200 w-full text-left">
             <span className="material-symbols-outlined">settings</span>
             <span className="font-body-md text-body-md">Settings</span>

@@ -5,6 +5,7 @@ import { UploadPage } from '@/features/photos';
 import { CheckoutPage } from '@/features/checkout';
 import { NequiPaymentPage, PaymentStatusPage } from '@/features/payments';
 import { AdminDashboardPage, AdminLoginPage, AdminSettingsPage, AdminCodesPage } from '@/features/admin';
+import AdminSupportPage from '@/features/admin/AdminSupportPage';
 import { SupportChatPage } from '@/features/support';
 
 export default function AppRouter() {
@@ -25,6 +26,7 @@ export default function AppRouter() {
         <Route path="/admin" element={<AdminDashboardPage />} />
         <Route path="/admin/codes" element={<AdminCodesPage />} />
         <Route path="/admin/settings" element={<AdminSettingsPage />} />
+        <Route path="/admin/support" element={<AdminSupportPage />} />
         
         {/* Independent Support Route */}
         <Route path="/support" element={<SupportChatPage />} />
